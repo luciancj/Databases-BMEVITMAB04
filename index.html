@@ -1,0 +1,2700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Databases (BMEVITMAB04) - Cheatsheet</title>
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- External Scripts -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <!-- Modular JavaScript -->
+    <script defer src="js/utils.js"></script>
+    <script defer src="js/navigation.js"></script>
+    <script defer src="js/exercises.js"></script>
+    <script defer src="js/audio.js"></script>
+    <script defer src="js/main.js"></script>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1><img src="assets/icon.svg" alt="Database" class="db-icon"> Databases (BMEVITMAB04)</h1>
+            <!-- Hamburger menu button (mobile only) -->
+            <button class="hamburger-menu" id="hamburgerMenu" onclick="Navigation.toggleMobileMenu()" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation overlay (for mobile full-screen menu) -->
+    <div class="nav-overlay" id="navOverlay" onclick="Navigation.closeMobileMenu()"></div>
+
+    <!-- Desktop: Side navigation | Mobile: Full-screen menu -->
+    <nav class="nav" id="sideNav">
+        <div class="nav-content">
+            <div class="nav-header">
+                <h3>Sections</h3>
+                <!-- Close button for mobile menu -->
+                <button class="menu-close-btn" onclick="Navigation.closeMobileMenu()" aria-label="Close menu">✕</button>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <button class="nav-btn active" data-section="overview" onclick="showSection('overview')">Overview</button>
+                <button class="nav-btn" data-section="er-model" onclick="showSection('er-model')">ER Modeling</button>
+                <button class="nav-btn" data-section="relational" onclick="showSection('relational')">Relational Algebra</button>
+                <button class="nav-btn" data-section="storage" onclick="showSection('storage')">Physical Storage</button>
+                <button class="nav-btn" data-section="optimization" onclick="showSection('optimization')">Query Optimization</button>
+                <button class="nav-btn" data-section="exercises" onclick="showSection('exercises')">Practice Exercises</button>
+                <button class="nav-btn" data-section="formulas" onclick="showSection('formulas')">Formula Quick Ref</button>
+                <button class="nav-btn" data-section="audio" onclick="showSection('audio')">Audio Guide</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- OVERVIEW SECTION -->
+        <section id="overview" class="section active">
+            <div class="card">
+                <h2>Course Overview</h2>
+
+                <div class="info-box">
+                    <div class="info-box-title">⚠️ Important Notice</div>
+                    <p><strong>This is not the official BME Databases course website but rather a personal study guide.</strong></p>
+                    <p>This is one of the hardest subjects at BME. Success requires:</p>
+                    <ul>
+                        <li>Full attention and regular studying</li>
+                        <li>Understanding underlying logic (not just memorization)</li>
+                        <li>70% attendance at practices and labs</li>
+                        <li>Completion of exercise book</li>
+                    </ul>
+                </div>
+
+                <h3>Key Concepts</h3>
+                <table>
+                    <tr>
+                        <th>Term</th>
+                        <th>Definition</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Database</strong></td>
+                        <td>Structured collection of knowledge stored electronically, controlled by DBMS</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DBMS</strong></td>
+                        <td>Database Management System - software for accessing and controlling data</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Entity</strong></td>
+                        <td>A thing (physical or logical) that exists and is distinguishable by attributes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Entity Set</strong></td>
+                        <td>Collection of all similar entities sharing the same attributes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Attribute</strong></td>
+                        <td>Property/characteristic of an entity (has domain of values)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Key</strong></td>
+                        <td>Attribute(s) that uniquely identify each entity in a set</td>
+                    </tr>
+                </table>
+
+                <h3>Database Architecture - Three Layers</h3>
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>External Data Model</h4>
+                        <p>Highest level, closest to user. User doesn't need to know database schema details like data structure or table definitions.</p>
+                    </div>
+                    <div class="card">
+                        <h4>Logical Data Model</h4>
+                        <p>Develops technical map of rules and data structures. Includes ER modeling, relational data models, relations, tables, and queries.</p>
+                    </div>
+                    <div class="card">
+                        <h4>Physical Data Model</h4>
+                        <p>Data blocks, data files, indices for searching. Responsible for allocating space for data.</p>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-box-title">💡 Why Separate Layers?</div>
+                    <p>If hardware damage occurs (e.g., hard drive failure), you don't lose logical structure. The separation allows for data independence and easier maintenance.</p>
+                </div>
+
+                <h3>Data → Information → Knowledge</h3>
+                <ul>
+                    <li><strong>Data:</strong> Raw values without semantic meaning (e.g., 20, John, Budapest)</li>
+                    <li><strong>Information:</strong> Processed data with context (e.g., Age=20, Name=John, Location=Budapest)</li>
+                    <li><strong>Knowledge:</strong> Related information that represents reality (e.g., "John is a 20-year-old person in Budapest")</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ER MODEL SECTION -->
+        <section id="er-model" class="section">
+            <div class="card">
+                <h2>Entity-Relationship (ER) Modeling</h2>
+                
+                <p>ER modeling provides a conceptual design of the database without attention to physical implementation details.</p>
+
+                <h3>Chen Notation Elements</h3>
+                <table>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Meaning</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>Rectangle</td>
+                        <td>Entity Set</td>
+                        <td>Represents a collection of similar entities</td>
+                    </tr>
+                    <tr>
+                        <td>Double Rectangle</td>
+                        <td>Weak Entity Set</td>
+                        <td>Entity that borrows key from another entity</td>
+                    </tr>
+                    <tr>
+                        <td>Diamond</td>
+                        <td>Relationship Set</td>
+                        <td>Represents associations between entities</td>
+                    </tr>
+                    <tr>
+                        <td>Double Diamond</td>
+                        <td>Identifying Relationship</td>
+                        <td>Relationship that identifies weak entity</td>
+                    </tr>
+                    <tr>
+                        <td>Circle</td>
+                        <td>Attribute</td>
+                        <td>Property of an entity or relationship</td>
+                    </tr>
+                    <tr>
+                        <td>Underlined Attribute</td>
+                        <td>Key Attribute</td>
+                        <td>Uniquely identifies entities</td>
+                    </tr>
+                    <tr>
+                        <td>Triangle (ISA)</td>
+                        <td>Specialization</td>
+                        <td>Hierarchy relationship (A is a B)</td>
+                    </tr>
+                </table>
+
+                <h3>Relationship Cardinality</h3>
+                <table>
+                    <tr>
+                        <th>Cardinality</th>
+                        <th>Notation</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                    <tr>
+                        <td><strong>One-to-One</strong></td>
+                        <td>\(1:1\)</td>
+                        <td>Each entity of both sets connects to at most one entity of the other</td>
+                        <td>Person ↔ Passport</td>
+                    </tr>
+                    <tr>
+                        <td><strong>One-to-Many</strong></td>
+                        <td>\(1:N\)</td>
+                        <td>Each entity of second set connects to at most one of first; first can connect to many</td>
+                        <td>Department → Employees</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Many-to-One</strong></td>
+                        <td>\(M:1\)</td>
+                        <td>Many entities in E1 associate with at most one in E2</td>
+                        <td>Students → University</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Many-to-Many</strong></td>
+                        <td>\(M:N\)</td>
+                        <td>Each entity of both sets can connect to arbitrary number of the other</td>
+                        <td>Students ↔ Courses</td>
+                    </tr>
+                </table>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">Weak Entity Sets - Detailed Explanation</div>
+                    <div class="collapsible-content">
+                        <h4>What is a Weak Entity?</h4>
+                        <p>A weak entity set is one that:</p>
+                        <ul>
+                            <li>Cannot be uniquely identified by its own attributes alone</li>
+                            <li>Must borrow key attributes from a related "strong" entity</li>
+                            <li>Depends on the existence of the strong entity</li>
+                        </ul>
+                        
+                        <h4>Example: Buildings and Rooms</h4>
+                        <div class="formula">
+                            <strong>BUILDING</strong> (BuildingID, BuildingName, Address)<br>
+                            <strong>ROOM</strong> (RoomNumber, Floor, Capacity)
+                        </div>
+                        <p>Room cannot exist without a Building. RoomNumber alone is not unique (many buildings have Room 101), but (BuildingID, RoomNumber) together form a unique key.</p>
+                        
+                        <h4>Key Characteristics:</h4>
+                        <ul>
+                            <li><strong>Borrowed Key:</strong> Uses key from strong entity (BuildingID)</li>
+                            <li><strong>Partial Key:</strong> Own attribute that helps identify (RoomNumber)</li>
+                            <li><strong>Determining Relationship:</strong> The relationship connecting weak to strong entity (shown with double diamond)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">ISA Hierarchies (Specialization)</div>
+                    <div class="collapsible-content">
+                        <h4>Concept: A is-a B</h4>
+                        <p>If entity set B is a generalization of entity set A, then A is a special kind of B.</p>
+                        
+                        <h4>Example: Employees and Players</h4>
+                        <div class="formula">
+                            <strong>EMPLOYEE</strong> (ID_NO, NAME, SALARY)<br>
+                            ↑ (ISA)<br>
+                            <strong>PLAYER</strong> (BATTING_AVG, HOME_RUNS)
+                        </div>
+                        
+                        <p><strong>Key attribute of PLAYER:</strong> ID_NO (borrowed from EMPLOYEE)</p>
+                        
+                        <ul>
+                            <li>PLAYER inherits all attributes from EMPLOYEE</li>
+                            <li>PLAYER adds specialized attributes (BATTING_AVG, HOME_RUNS)</li>
+                            <li>Every PLAYER is an EMPLOYEE, but not every EMPLOYEE is a PLAYER</li>
+                        </ul>
+                        
+                        <div class="tip-box">
+                            <div class="tip-box-title">💡 When to Use ISA Hierarchies</div>
+                            <p>Use ISA when you have a subset of entities with additional specialized attributes or when you want to model inheritance relationships.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Relationship Arity</h3>
+                <ul>
+                    <li><strong>Unary (Degree 1):</strong> Relationship involving one entity set (e.g., Employee manages Employee)</li>
+                    <li><strong>Binary (Degree 2):</strong> Relationship between two entity sets (most common)</li>
+                    <li><strong>Ternary (Degree 3):</strong> Relationship among three entity sets (e.g., Doctor prescribes Medicine to Patient)</li>
+                    <li><strong>N-ary (Degree N):</strong> Relationship involving N entity sets</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- RELATIONAL ALGEBRA SECTION -->
+        <section id="relational" class="section">
+            <div class="card">
+                <h2>Relational Algebra</h2>
+                
+                <p>Relational algebra is a procedural query language consisting of operations that take relations as input and produce relations as output.</p>
+
+                <h3>Basic Operations</h3>
+                <table>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Name</th>
+                        <th>Notation</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td><strong>σ</strong></td>
+                        <td>Selection</td>
+                        <td>\(\sigma_{\text{condition}}(R)\)</td>
+                        <td>Selects rows that satisfy a condition</td>
+                    </tr>
+                    <tr>
+                        <td><strong>π</strong></td>
+                        <td>Projection</td>
+                        <td>\(\pi_{A,B,C}(R)\)</td>
+                        <td>Selects specified columns (eliminates duplicates)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>×</strong></td>
+                        <td>Cartesian Product</td>
+                        <td>\(R \times S\)</td>
+                        <td>All possible combinations of rows from R and S</td>
+                    </tr>
+                    <tr>
+                        <td><strong>⋈</strong></td>
+                        <td>Natural Join</td>
+                        <td>\(R \bowtie S\)</td>
+                        <td>Combines rows with matching common attributes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>⋈<sub>θ</sub></strong></td>
+                        <td>Theta Join</td>
+                        <td>\(R \bowtie_{\theta} S\)</td>
+                        <td>Join with condition θ</td>
+                    </tr>
+                    <tr>
+                        <td><strong>∪</strong></td>
+                        <td>Union</td>
+                        <td>\(R \cup S\)</td>
+                        <td>All rows from R or S (no duplicates)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>∩</strong></td>
+                        <td>Intersection</td>
+                        <td>\(R \cap S\)</td>
+                        <td>Rows appearing in both R and S</td>
+                    </tr>
+                    <tr>
+                        <td><strong>−</strong></td>
+                        <td>Difference</td>
+                        <td>\(R - S\)</td>
+                        <td>Rows in R but not in S</td>
+                    </tr>
+                </table>
+
+                <h3>Key Transformations & Properties</h3>
+                
+                <div class="collapsible">
+                    <div class="collapsible-header">Selection Properties</div>
+                    <div class="collapsible-content">
+                        <div class="formula">
+                            <strong>Cascade:</strong><br>
+                            \[\sigma_{c_1 \land c_2}(r) \equiv \sigma_{c_1}(\sigma_{c_2}(r))\]
+                        </div>
+                        <div class="formula">
+                            <strong>Commutative:</strong><br>
+                            \[\sigma_{c_1}(\sigma_{c_2}(r)) \equiv \sigma_{c_2}(\sigma_{c_1}(r))\]
+                        </div>
+                        <p>This means you can break AND conditions into separate selections, and you can apply them in any order.</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">Projection Properties</div>
+                    <div class="collapsible-content">
+                        <div class="formula">
+                            <strong>Cascade:</strong><br>
+                            \[\pi_{L_1}(\pi_{L_2}(...(\pi_{L_n}(r))...)) \equiv \pi_{L_1}(r)\]
+                        </div>
+                        <p>Only the outermost projection matters - intermediate projections are redundant as long as they include attributes needed for outer projection.</p>
+                        
+                        <div class="formula">
+                            <strong>With Selection:</strong><br>
+                            \[\pi_{A_1,A_2,...,A_n}(\sigma_c(r)) \equiv \sigma_c(\pi_{A_1,A_2,...,A_n}(r))\]
+                        </div>
+                        <p>Projection and selection can be swapped if the condition only involves projected attributes.</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">Join Properties</div>
+                    <div class="collapsible-content">
+                        <div class="formula">
+                            <strong>Commutative:</strong><br>
+                            \[r \bowtie_{\theta} s \equiv s \bowtie_{\theta} r\]
+                        </div>
+                        <div class="formula">
+                            <strong>Associative:</strong><br>
+                            \[(r \bowtie s) \bowtie t \equiv r \bowtie (s \bowtie t)\]
+                        </div>
+                        <p>You can rearrange the order of joins. This is crucial for query optimization!</p>
+                        
+                        <div class="formula">
+                            <strong>Theta Join Definition:</strong><br>
+                            \[r \bowtie_{\theta} s = \sigma_{\theta}(r \times s)\]
+                        </div>
+                        
+                        <div class="formula">
+                            <strong>Natural Join Definition:</strong><br>
+                            \[r \bowtie s = \pi_{A \cup B}(\sigma_{R.X = S.X}(r \times s))\]
+                        </div>
+                        <p>Where \(X\) are the common attributes between R and S.</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">Set Operations Properties</div>
+                    <div class="collapsible-content">
+                        <p><strong>Requirements:</strong> Union, Intersection, and Difference require relations to have:</p>
+                        <ul>
+                            <li>Same number of attributes</li>
+                            <li>Compatible attribute types (union compatibility)</li>
+                        </ul>
+                        
+                        <div class="formula">
+                            <strong>Selection Distribution:</strong><br>
+                            \[\sigma_c(r \cup s) \equiv \sigma_c(r) \cup \sigma_c(s)\]
+                            \[\sigma_c(r \cap s) \equiv \sigma_c(r) \cap \sigma_c(s)\]
+                            \[\sigma_c(r - s) \equiv \sigma_c(r) - \sigma_c(s)\]
+                        </div>
+                        
+                        <div class="formula">
+                            <strong>Projection Distribution:</strong><br>
+                            \[\pi_L(r \cup s) \equiv \pi_L(r) \cup \pi_L(s)\]
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Special Operations</h3>
+                
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>Finding Minimum Element</h4>
+                        <div class="formula">
+                            \[\min(R) = R - \pi_A(\sigma_{R.A < S.A}(R \times \rho_{S}(R)))\]
+                        </div>
+                        <p>Subtract all elements that have something smaller than them.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>Finding Second Smallest</h4>
+                        <div class="formula">
+                            First remove minimum, then find minimum of remainder
+                        </div>
+                        <p>Apply minimum operation on \(R - \min(R)\)</p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">⚠️ Common Mistakes</div>
+                    <ul>
+                        <li><strong>Selection vs Projection:</strong> \(\sigma\) selects ROWS, \(\pi\) selects COLUMNS</li>
+                        <li><strong>Natural Join:</strong> Automatically matches common attributes - don't specify condition</li>
+                        <li><strong>Cartesian Product:</strong> Creates \(|r| \times |s|\) rows - usually too large, prefer join</li>
+                        <li><strong>Set Operations:</strong> Require union compatibility (same schema)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHYSICAL STORAGE SECTION -->
+        <section id="storage" class="section">
+            <div class="card">
+                <h2>Physical Storage & Indexing</h2>
+                
+                <h3>Index Types Comparison</h3>
+                <table>
+                    <tr>
+                        <th>Type</th>
+                        <th>Entries per</th>
+                        <th>Data File Order</th>
+                        <th>Use Case</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Sparse Index</strong></td>
+                        <td>1 per data block</td>
+                        <td>Ordered on block level</td>
+                        <td>Primary index, range queries</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dense Index</strong></td>
+                        <td>1 per data record</td>
+                        <td>Unordered</td>
+                        <td>Secondary index, point queries</td>
+                    </tr>
+                    <tr>
+                        <td><strong>B* Tree</strong></td>
+                        <td>Multiple levels</td>
+                        <td>Ordered on block level</td>
+                        <td>Dynamic, balanced access</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hash Index</strong></td>
+                        <td>Variable (buckets)</td>
+                        <td>Hash-based</td>
+                        <td>Fast equality search</td>
+                    </tr>
+                </table>
+
+                <h3>Sparse Index</h3>
+                <div class="collapsible">
+                    <div class="collapsible-header">Structure & Properties</div>
+                    <div class="collapsible-content">
+                        <ul>
+                            <li><strong>One index entry per data block</strong> (not per record)</li>
+                            <li>Key in index = lowest search key in the data block</li>
+                            <li>Data file must be ordered on block level</li>
+                            <li>Requires less space than dense index</li>
+                        </ul>
+                        
+                        <h4>Blocking Factor</h4>
+                        <div class="formula">
+                            \[f_i = \left\lfloor \frac{b}{p+k} \right\rfloor\]
+                        </div>
+                        <p>Where: \(b\) = block size, \(p\) = pointer size, \(k\) = key size</p>
+                        
+                        <h4>Search Cost</h4>
+                        <div class="formula">
+                            \[\text{Cost} = \left\lceil \log_2 b_i \right\rceil + 1 + 1\]
+                        </div>
+                        <p>Binary search in index + find first block + read data block</p>
+                    </div>
+                </div>
+
+                <h3>B* Tree</h3>
+                <div class="collapsible">
+                    <div class="collapsible-header">Structure & Properties</div>
+                    <div class="collapsible-content">
+                        <h4>Key Characteristics</h4>
+                        <ul>
+                            <li><strong>Balanced:</strong> All root-to-leaf paths have the same length</li>
+                            <li><strong>Multi-level:</strong> Sparse indices built on each other</li>
+                            <li><strong>Single root:</strong> Topmost level has one block (root of tree)</li>
+                            <li><strong>Pointers:</strong> Number of pointers in a block = number of keys + 1</li>
+                        </ul>
+                        
+                        <h4>Pointer Semantics</h4>
+                        <ul>
+                            <li>Pointer to <strong>left</strong> of key K → subtree with elements \(< K\)</li>
+                            <li>Pointer to <strong>right</strong> of key K → subtree with elements \(\geq K\)</li>
+                        </ul>
+                        
+                        <h4>Branching Factor</h4>
+                        <div class="formula">
+                            \[f_i = \left\lfloor \frac{b+k}{p+k} \right\rfloor\]
+                        </div>
+                        <p>Number of pointers per index block</p>
+                        
+                        <h4>Tree Height</h4>
+                        <div class="formula">
+                            \[HT_i = \left\lceil \log_{f_i} b_r \right\rceil\]
+                        </div>
+                        
+                        <h4>Search Cost</h4>
+                        <div class="formula">
+                            \[\text{Cost} = HT_i + 1\]
+                        </div>
+                        <p>Traverse tree levels + read data block</p>
+                        
+                        <div class="tip-box">
+                            <div class="tip-box-title">💡 Why B* Trees are Efficient</div>
+                            <p>With each block read, search space shrinks to \(1/f_i\) of previous size. Logarithmic time complexity makes them ideal for large databases.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">B* Tree Operations</div>
+                    <div class="collapsible-content">
+                        <h4>Insert Operation</h4>
+                        <p><strong>Case 1:</strong> Destination block has space</p>
+                        <ul>
+                            <li>Simply insert the new key in sorted order</li>
+                            <li>No structural changes needed</li>
+                        </ul>
+                        
+                        <p><strong>Case 2:</strong> Destination block is full</p>
+                        <ul>
+                            <li>Split the data block into two</li>
+                            <li>Add new entry in parent index block</li>
+                            <li>If parent is full, split it recursively</li>
+                            <li>May propagate up to root, creating new root (+1 level)</li>
+                        </ul>
+                        
+                        <h4>Delete Operation</h4>
+                        <ul>
+                            <li>Remove key from data block</li>
+                            <li>If block becomes too empty, merge with sibling</li>
+                            <li>Update parent index accordingly</li>
+                            <li>May propagate up (reduce tree height)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Dense Index</h3>
+                <div class="collapsible">
+                    <div class="collapsible-header">Structure & Properties</div>
+                    <div class="collapsible-content">
+                        <ul>
+                            <li><strong>One index entry per data record</strong></li>
+                            <li>Key points to specific record (block containing it)</li>
+                            <li>Data file can be unordered</li>
+                            <li>Not standalone - needs sparse index or B* tree on top</li>
+                        </ul>
+                        
+                        <h4>Search Cost</h4>
+                        <div class="formula">
+                            \[\text{Cost} = \text{(Search sparse/B* tree)} + 1 + 1\]
+                        </div>
+                        <p>Search upper level + read dense index block + read data block</p>
+                        
+                        <h4>Insert Cost</h4>
+                        <div class="formula">
+                            \text{Insert anywhere in data file, then create ordered entry in dense index}
+                        </div>
+                        <p>If dense index block splits, must update sparse index/B* tree</p>
+                    </div>
+                </div>
+
+                <h3>Hash Index</h3>
+                <div class="collapsible">
+                    <div class="collapsible-header">Structure & Properties</div>
+                    <div class="collapsible-content">
+                        <h4>Hash Function</h4>
+                        <div class="formula">
+                            \[h(k) = k \bmod B\]
+                        </div>
+                        <p>Maps key \(k\) to one of \(B\) buckets</p>
+                        
+                        <h4>Search Cost (Average)</h4>
+                        <div class="formula">
+                            \[\text{Cost} = 1 + \text{(avg bucket size)}\]
+                        </div>
+                        <p>Hash lookup + linear search within bucket</p>
+                        
+                        <h4>Advantages</h4>
+                        <ul>
+                            <li>\(O(1)\) average time for equality search</li>
+                            <li>Very fast point queries</li>
+                            <li>Simple implementation</li>
+                        </ul>
+                        
+                        <h4>Disadvantages</h4>
+                        <ul>
+                            <li>Cannot perform range queries</li>
+                            <li>Cannot perform ordered retrieval</li>
+                            <li>Collisions degrade performance</li>
+                            <li>Requires good hash function</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Primary vs Secondary Index</h3>
+                <table>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Primary Index</th>
+                        <th>Secondary Index</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Data File Order</strong></td>
+                        <td>Physically ordered by index key</td>
+                        <td>Not ordered by index key</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cost (Key)</strong></td>
+                        <td>\(HT_i + 1\)</td>
+                        <td>\(HT_i + 1\)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cost (Non-Key)</strong></td>
+                        <td>\(HT_i + \lceil SC(A,r)/f_r \rceil\)</td>
+                        <td>\(HT_i + SC(A,r)\)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Range Queries</strong></td>
+                        <td>Efficient (sequential blocks)</td>
+                        <td>Less efficient (scattered blocks)</td>
+                    </tr>
+                </table>
+
+                <div class="info-box">
+                    <div class="info-box-title">⚠️ Key Insight</div>
+                    <p>Secondary index on non-key can be very expensive: each matching record might be in a different block, requiring \(SC(A,r)\) block accesses!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUERY OPTIMIZATION SECTION -->
+        <section id="optimization" class="section">
+            <div class="card">
+                <h2>Query Optimization</h2>
+                
+                <h3>Catalog Notation Reference</h3>
+                <table>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Meaning</th>
+                        <th>Formula (if applicable)</th>
+                    </tr>
+                    <tr>
+                        <td>\(n_r\)</td>
+                        <td>Number of records in relation r</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>\(b_r\)</td>
+                        <td>Number of blocks storing r</td>
+                        <td>\(\lceil n_r / f_r \rceil\)</td>
+                    </tr>
+                    <tr>
+                        <td>\(f_r\)</td>
+                        <td>Blocking factor (records per block)</td>
+                        <td>\(\lfloor \text{block\_size} / \text{record\_size} \rfloor\)</td>
+                    </tr>
+                    <tr>
+                        <td>\(s_r\)</td>
+                        <td>Size of one record (bytes)</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>\(V(A,r)\)</td>
+                        <td>Number of distinct values of A in r</td>
+                        <td>\(|\pi_A(r)|\)</td>
+                    </tr>
+                    <tr>
+                        <td>\(SC(A,r)\)</td>
+                        <td>Selection cardinality (avg matching records)</td>
+                        <td>\(n_r / V(A,r)\) if not key; 1 if key</td>
+                    </tr>
+                    <tr>
+                        <td>\(HT_i\)</td>
+                        <td>Height of index tree</td>
+                        <td>\(\lceil \log_{f_i} b_r \rceil\)</td>
+                    </tr>
+                    <tr>
+                        <td>\(f_i\)</td>
+                        <td>Index branching factor</td>
+                        <td>\(\lfloor (b+k)/(p+k) \rfloor\)</td>
+                    </tr>
+                    <tr>
+                        <td>\(LB_i\)</td>
+                        <td>Number of leaf blocks in index</td>
+                        <td>-</td>
+                    </tr>
+                </table>
+
+                <h3>Selection Algorithm Costs</h3>
+                
+                <div class="collapsible">
+                    <div class="collapsible-header">Basic Algorithms (Equality Condition)</div>
+                    <div class="collapsible-content">
+                        <table>
+                            <tr>
+                                <th>Algorithm</th>
+                                <th>Cost</th>
+                                <th>Requirements</th>
+                            </tr>
+                            <tr>
+                                <td><strong>A1: Linear Search</strong></td>
+                                <td>\(b_r\)</td>
+                                <td>None (always works)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>A2: Binary Search</strong></td>
+                                <td>\(\lceil \log_2 b_r \rceil + \lceil SC(A,r)/f_r \rceil - 1\)</td>
+                                <td>File ordered by A, blocks contiguous</td>
+                            </tr>
+                            <tr>
+                                <td><strong>A3: Primary Index (Key)</strong></td>
+                                <td>\(HT_i + 1\)</td>
+                                <td>Primary index on key attribute</td>
+                            </tr>
+                            <tr>
+                                <td><strong>A4: Primary Index (Non-Key)</strong></td>
+                                <td>\(HT_i + \lceil SC(A,r)/f_r \rceil\)</td>
+                                <td>Primary index on non-key</td>
+                            </tr>
+                            <tr>
+                                <td><strong>A5: Secondary Index</strong></td>
+                                <td>\(HT_i + SC(A,r)\) or \(HT_i + 1\) if key</td>
+                                <td>Secondary index (B* tree)</td>
+                            </tr>
+                        </table>
+                        
+                        <div class="tip-box">
+                            <div class="tip-box-title">💡 Why A5 is Expensive for Non-Key</div>
+                            <p>With secondary index on non-key, each matching record could be in a different block, requiring \(SC(A,r)\) block reads!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">Comparison-Based Selection (\(A \leq v\))</div>
+                    <div class="collapsible-content">
+                        <h4>Result Size Estimation</h4>
+                        <div class="formula">
+                            <strong>If v is unknown:</strong><br>
+                            \[n_{avg} = \frac{n_r}{2}\]
+                        </div>
+                        <div class="formula">
+                            <strong>If v is known (uniform distribution):</strong><br>
+                            \[n_{avg} = n_r \cdot \frac{v - \min(A,r)}{\max(A,r) - \min(A,r)}\]
+                        </div>
+                        
+                        <table>
+                            <tr>
+                                <th>Algorithm</th>
+                                <th>Cost</th>
+                            </tr>
+                            <tr>
+                                <td><strong>A6: Primary Index (v unknown)</strong></td>
+                                <td>\(HT_i + b_r/2\)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>A6: Primary Index (v known)</strong></td>
+                                <td>\(HT_i + c/f_r\) where \(c\) = # records with \(A \leq v\)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>A7: Secondary Index (v unknown)</strong></td>
+                                <td>\(HT_i + LB_i/2 + n_r/2 - 1\)</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <h3>Join Operations</h3>
+                
+                <div class="collapsible">
+                    <div class="collapsible-header">Natural Join Result Size</div>
+                    <div class="collapsible-content">
+                        <h4>Case 1: No Common Attributes</h4>
+                        <div class="formula">
+                            \[R \cap S = \emptyset \Rightarrow |r \bowtie s| = n_r \times n_s\]
+                        </div>
+                        <p>Result is Cartesian product</p>
+                        
+                        <h4>Case 2: Common Attribute is Key in R</h4>
+                        <div class="formula">
+                            \[R \cap S \text{ is key in } R \Rightarrow |r \bowtie s| \leq n_s\]
+                        </div>
+                        <p>Each s record joins with at most one r record</p>
+                        
+                        <h4>Case 3: General Case</h4>
+                        <div class="formula">
+                            \[|r \bowtie s| = \frac{n_r \times n_s}{\max(V(A,r), V(A,s))}\]
+                        </div>
+                        <p>Where \(A\) is the common attribute(s)</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">Join Algorithms & Costs</div>
+                    <div class="collapsible-content">
+                        <table>
+                            <tr>
+                                <th>Algorithm</th>
+                                <th>Cost</th>
+                                <th>Notes</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Nested Loop Join</strong></td>
+                                <td>\(n_r \times b_s + b_r\)</td>
+                                <td>Worst case: for each record in r, scan all of s</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Block Nested Loop</strong></td>
+                                <td>\(b_r \times b_s + b_r\)</td>
+                                <td>For each block in r, scan all blocks of s</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Indexed Nested Loop</strong></td>
+                                <td>\(b_r + n_r \times c\)</td>
+                                <td>\(c\) = cost of index lookup on s. Put indexed relation in inner loop!</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sorted Merge Join</strong></td>
+                                <td>\(b_r + b_s + c\)</td>
+                                <td>\(c\) = sorting cost. Both relations must be sorted on join attribute</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hash Join</strong></td>
+                                <td>\(b_r + b_s\)</td>
+                                <td>Build hash table for smaller relation, probe with larger</td>
+                            </tr>
+                            <tr>
+                                <td><strong>One Relation Fits in RAM</strong></td>
+                                <td>\(b_r + b_s\)</td>
+                                <td>Best case: load smaller relation into memory</td>
+                            </tr>
+                        </table>
+                        
+                        <div class="tip-box">
+                            <div class="tip-box-title">💡 Join Algorithm Selection</div>
+                            <ul>
+                                <li><strong>Use Indexed Nested Loop</strong> if one relation has index on join attribute</li>
+                                <li><strong>Use Sorted Merge</strong> if both relations already sorted</li>
+                                <li><strong>Use Hash Join</strong> for equality joins when neither is indexed</li>
+                                <li><strong>Always put smaller relation in outer loop</strong> of nested loop joins</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Heuristic Optimization</h3>
+                
+                <div class="collapsible">
+                    <div class="collapsible-header">Query Tree Transformation Rules (In Order)</div>
+                    <div class="collapsible-content">
+                        <h4>Step 1: Break Conjunctions in Selection</h4>
+                        <div class="formula">
+                            \[\sigma_{c_1 \land c_2 \land ... \land c_n}(r) \rightarrow \sigma_{c_1}(\sigma_{c_2}(...(\sigma_{c_n}(r))...))\]
+                        </div>
+                        
+                        <h4>Step 2: Push Selections Down (Sink Selections)</h4>
+                        <p>Move selection operations as close to the leaves (base relations) as possible</p>
+                        <ul>
+                            <li>Selection over Cartesian product → move to operands if possible</li>
+                            <li>Selection over join → move to operands if condition involves only one relation</li>
+                        </ul>
+                        
+                        <h4>Step 3: Rearrange Leaves</h4>
+                        <p>Process smaller relations first to minimize intermediate result sizes</p>
+                        
+                        <h4>Step 4: Replace Cartesian Product + Selection with Join</h4>
+                        <div class="formula">
+                            \[\sigma_{\theta}(r \times s) \rightarrow r \bowtie_{\theta} s\]
+                        </div>
+                        
+                        <h4>Step 5: Push Projections Down (Sink Projections)</h4>
+                        <p>Keep only attributes needed for:</p>
+                        <ul>
+                            <li>Join conditions</li>
+                            <li>Selection conditions</li>
+                            <li>Final result</li>
+                        </ul>
+                        
+                        <div class="info-box">
+                            <div class="info-box-title">⚠️ Why This Order Matters</div>
+                            <p>Each step reduces the size of intermediate results or converts expensive operations (Cartesian product) to more efficient ones (join). Following this order typically produces near-optimal query plans.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">Materialization vs Pipelining</div>
+                    <div class="collapsible-content">
+                        <h4>Materialization</h4>
+                        <ul>
+                            <li>Evaluate one operation at a time</li>
+                            <li>Store intermediate results on disk</li>
+                            <li><strong>Advantage:</strong> Simple implementation</li>
+                            <li><strong>Disadvantage:</strong> Many expensive disk I/O operations</li>
+                        </ul>
+                        
+                        <h4>Pipelining</h4>
+                        <ul>
+                            <li>Multiple operations evaluated in parallel</li>
+                            <li>Results passed directly to next operation (no intermediate storage)</li>
+                            <li><strong>Advantage:</strong> No temporary storage, lower memory requirements</li>
+                            <li><strong>Disadvantage:</strong> Limits algorithm choices (e.g., can't use sort-merge join)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Cost-Based vs Heuristic Optimization</h3>
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>Cost-Based Optimization</h4>
+                        <ul>
+                            <li>Enumerate possible plans</li>
+                            <li>Estimate cost of each plan</li>
+                            <li>Choose minimum cost plan</li>
+                            <li>Problem: Too many plans for large queries</li>
+                            <li>Solution: Use heuristics to prune search space</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>Heuristic Optimization</h4>
+                        <ul>
+                            <li>Apply transformation rules</li>
+                            <li>No cost estimation needed</li>
+                            <li>Fast and effective</li>
+                            <li>May not find optimal plan</li>
+                            <li>Used in combination with cost-based</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXERCISES SECTION (truncated for length - same structure as before) -->
+        <section id="exercises" class="section">
+            <div class="card">
+                <h2>Practice Exercises with Detailed Solutions</h2>
+                <p><strong>Complete exercises from all tutorial PDFs with step-by-step solutions</strong></p>
+
+                <div class="exercise-toc">
+                    <h4>Table of Contents</h4>
+                    <ul>
+                        <li class="toc-section">ER Modeling (Exercises 1-6)</li>
+                        <li><a href="#ex1">1. Prescription Monitoring Database</a></li>
+                        <li><a href="#ex2">2. University Database (Weak Entity)</a></li>
+                        <li><a href="#ex3">3. SchoolDB Analysis</a></li>
+                        <li><a href="#ex4">4. Hospital Patient Database</a></li>
+                        <li><a href="#ex5">5. Hospital Departments</a></li>
+                        <li><a href="#ex6">6. Ternary to Binary Transformation</a></li>
+
+                        <li class="toc-section">Relational Algebra (Exercises 7-12)</li>
+                        <li><a href="#ex7">7. PC Manufacturer Queries</a></li>
+                        <li><a href="#ex8">8. Finding Oldest University</a></li>
+                        <li><a href="#ex9">9. Min/Max Element Finding</a></li>
+                        <li><a href="#ex10">10. Natural Join Result Size</a></li>
+                        <li><a href="#ex11">11. Product Database Queries</a></li>
+                        <li><a href="#ex12">12. Division Operation (Beer Example)</a></li>
+
+                        <li class="toc-section">Functional Dependencies (Exercises 13-17)</li>
+                        <li><a href="#ex13">13. Proving Transitivity Axiom</a></li>
+                        <li><a href="#ex14">14. Proving Expandability Axiom</a></li>
+                        <li><a href="#ex15">15. Completeness of Axiom System</a></li>
+                        <li><a href="#ex16">16. Relation with No Non-Trivial Dependencies</a></li>
+                        <li><a href="#ex17">17. Non-Trivial Dependency in 3-Row Relation</a></li>
+
+                        <li class="toc-section">Normal Forms (Exercises 18-20)</li>
+                        <li><a href="#ex18">18. Highest Normal Form (ABCD Schema)</a></li>
+                        <li><a href="#ex19">19. ISTQ Schema Normal Form</a></li>
+                        <li><a href="#ex20">20. BCNF Property Proof</a></li>
+
+                        <li class="toc-section">Physical Storage (Exercises 21-26)</li>
+                        <li><a href="#ex21">21. Sparse Index Calculation</a></li>
+                        <li><a href="#ex22">22. Hash Table Analysis</a></li>
+                        <li><a href="#ex23">23. B* Tree Large Dataset</a></li>
+                        <li><a href="#ex24">24. Dense Index with Sparse Index</a></li>
+                        <li><a href="#ex25">25. Two-Key Index with B* Tree</a></li>
+                        <li><a href="#ex26">26. Bucket Hashing Analysis</a></li>
+
+                        <li class="toc-section">Query Optimization (Exercises 27-30)</li>
+                        <li><a href="#ex27">27. Linear vs Binary Search</a></li>
+                        <li><a href="#ex28">28. Natural Join Size Estimation</a></li>
+                        <li><a href="#ex29">29. Hash Join vs Indexed Nested Loop</a></li>
+                        <li><a href="#ex30">30. Indexed Nested Loop - Choosing Outer</a></li>
+
+                        <li class="toc-section">Transaction Management (Exercises 31-34)</li>
+                        <li><a href="#ex31">31. Serializable Scheduling</a></li>
+                        <li><a href="#ex32">32. Non-Serializable Schedule</a></li>
+                        <li><a href="#ex33">33. Strict Two-Phase Locking</a></li>
+                        <li><a href="#ex34">34. Timestamp-Based Scheduling</a></li>
+                    </ul>
+                </div>
+
+                <h3>ER Modeling Exercises</h3>
+
+                <div class="exercise" id="ex1">
+                    <div class="exercise-header">Exercise 1: Prescription Monitoring Database</div>
+                    <div class="exercise-question">
+                        <p>Design an ER model for a prescription monitoring system:</p>
+                        <p><strong>Entities:</strong></p>
+                        <ul>
+                            <li>Patients: ID (unique), first name, last name, birth date</li>
+                            <li>Doctors: SSN (unique), first name, last name, birth date, work start date, specialty</li>
+                            <li>Pharmaceutical companies: name (unique), telephone</li>
+                            <li>Medicines: commercial name (unique), active ingredient</li>
+                            <li>Pharmacies: name (unique), address, telephone</li>
+                        </ul>
+                        <p><strong>Relationships:</strong></p>
+                        <ul>
+                            <li>Each patient has one doctor; each doctor has at least one patient</li>
+                            <li>Doctors prescribe medicines to patients</li>
+                            <li>Pharmacies sell medicines at specific prices (M:N)</li>
+                            <li>Pharmaceutical companies have contracts with pharmacies (M:N)</li>
+                            <li>Contract has: start date, end date, terms</li>
+                            <li>Companies manufacture medicines (1:N)</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Entity Sets:</h4>
+                        <ul>
+                            <li><strong>PATIENT</strong>(<u>PatientID</u>, FirstName, LastName, BirthDate)</li>
+                            <li><strong>DOCTOR</strong>(<u>SSN</u>, FirstName, LastName, BirthDate, WorkStartDate, Specialty)</li>
+                            <li><strong>PHARMACEUTICAL_COMPANY</strong>(<u>CompanyName</u>, Telephone)</li>
+                            <li><strong>MEDICINE</strong>(<u>CommercialName</u>, ActiveIngredient)</li>
+                            <li><strong>PHARMACY</strong>(<u>PharmacyName</u>, Address, Telephone)</li>
+                        </ul>
+                        
+                        <h4>Relationship Sets:</h4>
+                        <ul>
+                            <li><strong>HAS_DOCTOR</strong> (Patient, Doctor) - <strong>M:1</strong>
+                                <br>Many patients to one doctor (each patient has ONE doctor)</li>
+                            <li><strong>PRESCRIBES</strong> (Doctor, Medicine, Patient) - <strong>Ternary relationship</strong>
+                                <br>Attributes: Date, Dosage, Quantity</li>
+                            <li><strong>SELLS</strong> (Pharmacy, Medicine) - <strong>M:N</strong>
+                                <br>Attribute: Price (depends on both pharmacy and medicine)</li>
+                            <li><strong>CONTRACT</strong> (Pharmacy, Company) - <strong>M:N</strong>
+                                <br>Attributes: StartDate, EndDate, Terms</li>
+                            <li><strong>MANUFACTURES</strong> (Company, Medicine) - <strong>1:N</strong>
+                                <br>One company manufactures many medicines</li>
+                        </ul>
+                        
+                        <h4>Key Attributes (underlined in ER diagram):</h4>
+                        <p>PatientID, SSN, CompanyName, CommercialName, PharmacyName</p>
+                        
+                        <h4>Possible ISA Hierarchy:</h4>
+                        <p>DOCTOR ISA PERSON, PATIENT ISA PERSON where PERSON has common attributes (FirstName, LastName, BirthDate)</p>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex2">
+                    <div class="exercise-header">Exercise 2: University Database (Weak Entity)</div>
+                    <div class="exercise-question">
+                        <p>Design an ER model for a university database:</p>
+                        <ul>
+                            <li>Students: name, student number (unique), SSN (unique), address, phone, DOB, gender, year</li>
+                            <li>Departments: name (unique), dept code (unique), office number, office phone</li>
+                            <li>Courses: name, description, course number (unique), semester hours, level, offering dept</li>
+                            <li>Sections: instructor, semester, year, course, section number (1,2,3...)</li>
+                            <li>Sections are ONLY identified through the course offering them (WEAK ENTITY)</li>
+                            <li>Students have major dept and optional minor dept</li>
+                            <li>Students follow multiple courses every semester</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Entity Sets:</h4>
+                        <ul>
+                            <li><strong>STUDENT</strong>(<u>StudentNumber</u>, SSN, Name, Address, Phone, DOB, Gender, Year)</li>
+                            <li><strong>DEPARTMENT</strong>(<u>DeptCode</u>, Name, OfficeNumber, OfficePhone)</li>
+                            <li><strong>COURSE</strong>(<u>CourseNumber</u>, Name, Description, SemesterHours, Level)</li>
+                            <li><strong>SECTION</strong>(<u>CourseNumber, SectionNumber</u>, Instructor, Semester, Year)
+                                <br><strong>WEAK ENTITY</strong> - borrows CourseNumber from COURSE</li>
+                        </ul>
+                        
+                        <h4>Relationships:</h4>
+                        <ul>
+                            <li><strong>OFFERS</strong> (Department, Course) - <strong>M:N</strong> (some courses offered by multiple depts)</li>
+                            <li><strong>HAS_SECTION</strong> (Course, Section) - <strong>1:N Identifying Relationship</strong></li>
+                            <li><strong>MAJOR_IN</strong> (Student, Department) - <strong>M:1</strong></li>
+                            <li><strong>MINOR_IN</strong> (Student, Department) - <strong>M:1</strong> (optional)</li>
+                            <li><strong>ENROLLS</strong> (Student, Section) - <strong>M:N</strong> with Grade attribute</li>
+                        </ul>
+                        
+                        <h4>Key Points:</h4>
+                        <p>SECTION is a <strong>weak entity</strong> because:</p>
+                        <ul>
+                            <li>Its key is (CourseNumber, SectionNumber) - partial key is SectionNumber</li>
+                            <li>It cannot exist without COURSE</li>
+                            <li>Connected via double-diamond (identifying relationship)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex3">
+                    <div class="exercise-header">Exercise 3: SchoolDB Analysis</div>
+                    <div class="exercise-question">
+                        <p><strong>Question 1:</strong> Can version 1 store "which teacher teaches which subject to which class"?</p>
+                        <p><strong>Question 2:</strong> Can version 2 store certified but not actively taught specializations?</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Answer to Question 1: NO</h4>
+                        <p><strong>Problem:</strong> Version 1 has separate binary relationships "Teaches" and "Specializes" but no ternary relationship connecting Teacher-Subject-Class together.</p>
+                        <p>We can know:</p>
+                        <ul>
+                            <li>Which teacher teaches which class (via Teaches)</li>
+                            <li>Which teacher specializes in which subject (via Specializes)</li>
+                        </ul>
+                        <p>But we CANNOT know which specific subject a teacher teaches to a specific class.</p>
+                        
+                        <h4>Answer to Question 2: YES</h4>
+                        <p>Version 2 removes the "Specializes" relationship, so now:</p>
+                        <ul>
+                            <li>We CAN store which teacher teaches which subject to which class (if we had a ternary)</li>
+                            <li>We CANNOT store certified specializations that aren't being taught</li>
+                        </ul>
+                        
+                        <h4>Better Design:</h4>
+                        <p>Keep BOTH relationships:</p>
+                        <ul>
+                            <li><strong>TEACHES</strong> (Teacher, Subject, Class) - ternary for actual teaching</li>
+                            <li><strong>CERTIFIED_IN</strong> (Teacher, Subject) - binary for all certifications</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Relational Algebra Exercises</h3>
+
+                <div class="exercise" id="ex7">
+                    <div class="exercise-header">Exercise 7: PC Manufacturer Queries</div>
+                    <div class="exercise-question">
+                        <p><strong>Schemas:</strong></p>
+                        <ul>
+                            <li>PRODUCT(MANUFACTURER, MODEL, TYPE)</li>
+                            <li>PC(MODEL, CPU, RAM, DISK, PRICE)</li>
+                            <li>LAPTOP(MODEL, CPU, RAM, DISK, SCREEN, PRICE)</li>
+                        </ul>
+                        <p><strong>Query d):</strong> Which manufacturers make laptops but NOT PCs?</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Step-by-step Solution:</h4>
+                        <div class="formula">
+                            <strong>1. Get laptop manufacturers:</strong>
+                            \[\text{LaptopMfrs} = \pi_{\text{MANUFACTURER}}(\sigma_{\text{TYPE}='laptop'}(\text{PRODUCT}))\]
+                        </div>
+                        <div class="formula">
+                            <strong>2. Get PC manufacturers:</strong>
+                            \[\text{PCMfrs} = \pi_{\text{MANUFACTURER}}(\sigma_{\text{TYPE}='PC'}(\text{PRODUCT}))\]
+                        </div>
+                        <div class="formula">
+                            <strong>3. Subtract PC makers from laptop makers:</strong>
+                            \[\text{Result} = \text{LaptopMfrs} - \text{PCMfrs}\]
+                        </div>
+                        <div class="formula">
+                            <strong>Complete expression:</strong>
+                            \[\pi_{\text{MANUFACTURER}}(\sigma_{\text{TYPE}='laptop'}(\text{PRODUCT})) - \pi_{\text{MANUFACTURER}}(\sigma_{\text{TYPE}='PC'}(\text{PRODUCT}))\]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex8">
+                    <div class="exercise-header">Exercise 8: Finding Oldest Star University</div>
+                    <div class="exercise-question">
+                        <p><strong>Schemas:</strong></p>
+                        <ul>
+                            <li>StarUniversity(University, Founded)</li>
+                        </ul>
+                        <p><strong>Query:</strong> Which is the oldest star university?</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Approach: Find universities with no older university</h4>
+                        <div class="formula">
+                            <strong>Method 1: Using self-join</strong>
+                            \[\text{Let } S1 = \rho_{S1}(\text{StarUniversity}), S2 = \rho_{S2}(\text{StarUniversity})\]
+                            \[\text{Older} = \pi_{S1.\text{University}}(\sigma_{S1.\text{Founded} > S2.\text{Founded}}(S1 \times S2))\]
+                            \[\text{Result} = \pi_{\text{University}}(\text{StarUniversity}) - \text{Older}\]
+                        </div>
+                        <p><strong>Explanation:</strong> Find all universities for which there exists another university with an earlier founding date, then subtract those from all universities. What remains is the oldest.</p>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex9">
+                    <div class="exercise-header">Exercise 9: Smallest and Second Smallest Element</div>
+                    <div class="exercise-question">
+                        <p>Given a relation R(A), find:</p>
+                        <p>a) Smallest element</p>
+                        <p>b) Second smallest element</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <div class="formula">
+                            <strong>a) Smallest element:</strong>
+                            \[\text{Let } R1 = \rho_{R1}(R), R2 = \rho_{R2}(R)\]
+                            \[\text{NotMin} = \pi_{R1.A}(\sigma_{R1.A > R2.A}(R1 \times R2))\]
+                            \[\text{Min} = \pi_A(R) - \text{NotMin}\]
+                        </div>
+                        <div class="formula">
+                            <strong>b) Second smallest:</strong>
+                            \[\text{WithoutMin} = R - \text{Min}\]
+                            \[\text{Apply same logic to WithoutMin}\]
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Physical Storage Exercises</h3>
+
+                <div class="exercise" id="ex21">
+                    <div class="exercise-header">Exercise 21: Sparse Index - Complete Calculation</div>
+                    <div class="exercise-question">
+                        <p>Relation: 1,000 records, record = 850 bytes, block = 4,000 bytes</p>
+                        <p>Key = 50 bytes, pointer = 18 bytes</p>
+                        <p><strong>Questions:</strong></p>
+                        <ol>
+                            <li>How many records fit in a block?</li>
+                            <li>How much disk space does index and relation occupy?</li>
+                            <li>Where do we need ordering?</li>
+                            <li>Search cost (index in RAM)?</li>
+                            <li>Search cost (index NOT in RAM)?</li>
+                        </ol>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <div class="formula">
+                            <strong>1. Blocking factor (records per block):</strong>
+                            \[f_r = \left\lfloor \frac{4000}{850} \right\rfloor = \lfloor 4.7 \rfloor = 4 \text{ records/block}\]
+                        </div>
+                        <div class="formula">
+                            <strong>2a. Data blocks needed:</strong>
+                            \[b_r = \left\lceil \frac{1000}{4} \right\rceil = 250 \text{ blocks}\]
+                            \[\text{Data file size} = 250 \times 4000 = 1,000,000 \text{ bytes} = 977 \text{ KB}\]
+                        </div>
+                        <div class="formula">
+                            <strong>2b. Index entries per block:</strong>
+                            \[f_i = \left\lfloor \frac{4000}{50 + 18} \right\rfloor = \lfloor 58.8 \rfloor = 58 \text{ entries/block}\]
+                        </div>
+                        <div class="formula">
+                            <strong>Sparse index has 1 entry per data block:</strong>
+                            \[\text{Index entries} = 250\]
+                            \[\text{Index blocks} = \left\lceil \frac{250}{58} \right\rceil = 5 \text{ blocks}\]
+                            \[\text{Index size} = 5 \times 4000 = 20,000 \text{ bytes} = 19.5 \text{ KB}\]
+                        </div>
+                        <p><strong>3. Ordering requirements:</strong></p>
+                        <ul>
+                            <li><strong>Index level:</strong> Index entries must be ordered by key</li>
+                            <li><strong>Data level:</strong> Data blocks must be ordered (block level ordering)</li>
+                            <li><strong>Within blocks:</strong> Records within each block should be ordered</li>
+                        </ul>
+                        <div class="formula">
+                            <strong>4. Search cost (index in RAM):</strong>
+                            \[\text{Cost} = 1 \text{ data block read}\]
+                            <p>Since index is in RAM, we do binary search in memory (free), then read 1 data block.</p>
+                        </div>
+                        <div class="formula">
+                            <strong>5. Search cost (index NOT in RAM):</strong>
+                            \[\text{Binary search cost} = \left\lceil \log_2 5 \right\rceil = 3 \text{ index blocks}\]
+                            \[\text{Total cost} = 3 + 1 = 4 \text{ block accesses}\]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex22">
+                    <div class="exercise-header">Exercise 22: Hash Table Analysis</div>
+                    <div class="exercise-question">
+                        <p>Hash table with 7 buckets, \(h(k) = k \bmod 7\)</p>
+                        <p>Records to store: 56, 91, 27, 19, 36, 52, 79</p>
+                        <p>One block per record.</p>
+                        <p><strong>a)</strong> Average record access time?</p>
+                        <p><strong>b)</strong> Best and worst possible access time?</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Hash distribution:</h4>
+                        <ul>
+                            <li>56 mod 7 = 0 → Bucket 0</li>
+                            <li>91 mod 7 = 0 → Bucket 0 (collision)</li>
+                            <li>27 mod 7 = 6 → Bucket 6</li>
+                            <li>19 mod 7 = 5 → Bucket 5</li>
+                            <li>36 mod 7 = 1 → Bucket 1</li>
+                            <li>52 mod 7 = 3 → Bucket 3</li>
+                            <li>79 mod 7 = 2 → Bucket 2</li>
+                        </ul>
+                        <p><strong>Bucket 0:</strong> 2 records (overflow)</p>
+                        <p><strong>Buckets 1,2,3,5,6:</strong> 1 record each</p>
+                        <p><strong>Bucket 4:</strong> 0 records</p>
+                        
+                        <div class="formula">
+                            <strong>a) Average access time:</strong>
+                            <p>Assuming chaining for overflow:</p>
+                            \[\text{Avg} = \frac{(1+2+1+1+0+1+1)}{7} = \frac{7}{7} = 1 \text{ block}\]
+                            <p>But with bucket 0 having overflow:</p>
+                            \[\text{Actual avg} = \frac{(1+2+1+1+1+1+1)}{7} \approx 1.14 \text{ blocks}\]
+                        </div>
+                        
+                        <div class="formula">
+                            <strong>b) Best case:</strong> Perfect hash (all buckets have 1 record)
+                            \[\text{Best} = 1 \text{ block access always}\]
+                            
+                            <strong>Worst case:</strong> All records hash to same bucket
+                            \[\text{Worst} = \frac{1+2+3+4+5+6+7}{7} = 4 \text{ block accesses on average}\]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex23">
+                    <div class="exercise-header">Exercise 23: B* Tree - Large Dataset</div>
+                    <div class="exercise-question">
+                        <p>Relation: 10,000,000 records, record = 850 bytes, block = 4,000 bytes</p>
+                        <p>Key = 50 bytes, pointer = 18 bytes</p>
+                        <p><strong>Find:</strong></p>
+                        <ol>
+                            <li>Minimum blocks needed</li>
+                            <li>Average record access time (1 block in RAM, access time = 5ms)</li>
+                        </ol>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <div class="formula">
+                            <strong>1. Data file calculations:</strong>
+                            \[f_r = \left\lfloor \frac{4000}{850} \right\rfloor = 4 \text{ records/block}\]
+                            \[b_r = \left\lceil \frac{10,000,000}{4} \right\rceil = 2,500,000 \text{ data blocks}\]
+                        </div>
+                        <div class="formula">
+                            <strong>2. B* tree branching factor:</strong>
+                            \[f_i = \left\lfloor \frac{4000 + 50}{18 + 50} \right\rfloor = \left\lfloor \frac{4050}{68} \right\rfloor = 59\]
+                        </div>
+                        <div class="formula">
+                            <strong>3. Tree height:</strong>
+                            \[HT_i = \left\lceil \log_{59} 2,500,000 \right\rceil\]
+                            \[\log_{59} 2,500,000 = \frac{\log 2,500,000}{\log 59} = \frac{6.398}{1.771} \approx 3.61\]
+                            \[HT_i = 4 \text{ levels}\]
+                        </div>
+                        <div class="formula">
+                            <strong>4. Minimum blocks:</strong>
+                            <p>Tree structure (minimum with perfect balance):</p>
+                            <ul>
+                                <li>Level 4 (leaves): 2,500,000 blocks</li>
+                                <li>Level 3: ⌈2,500,000/59⌉ = 42,373 blocks</li>
+                                <li>Level 2: ⌈42,373/59⌉ = 718 blocks</li>
+                                <li>Level 1 (root): ⌈718/59⌉ = 13 blocks... actually 1 root</li>
+                            </ul>
+                            \[\text{Total index blocks} \approx 43,092\]
+                            \[\text{Total blocks} = 2,500,000 + 43,092 = 2,543,092 \text{ blocks}\]
+                        </div>
+                        <div class="formula">
+                            <strong>5. Search cost:</strong>
+                            \[\text{Cost} = HT_i + 1 = 4 + 1 = 5 \text{ block accesses}\]
+                            \[\text{Time} = 5 \times 5\text{ms} = 25\text{ms}\]
+                        </div>
+                        <p><strong>Amazing result:</strong> Only 5 disk accesses to search 10 MILLION records!</p>
+                    </div>
+                </div>
+
+                <h3>Query Optimization Exercises</h3>
+
+                <div class="exercise" id="ex27">
+                    <div class="exercise-header">Exercise 27: Selection with Linear vs Binary Search</div>
+                    <div class="exercise-question">
+                        <p>Relation Acct(City, Balance, ...)</p>
+                        <p>Query: \(\sigma_{\text{City}='Budapest'}(\text{Acct})\)</p>
+                        <p>Given: \(f_{\text{Acct}} = 40\), \(n_{\text{Acct}} = 10,000\), \(V(\text{City}) = 50\)</p>
+                        <p><strong>a)</strong> Write query in relational algebra</p>
+                        <p><strong>b)</strong> Min, max, avg cost for linear search?</p>
+                        <p><strong>c)</strong> Expected cost for binary search (ordered by branch)?</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <div class="formula">
+                            <strong>a) Relational algebra:</strong>
+                            \[\sigma_{\text{City}='Budapest'}(\text{Acct})\]
+                        </div>
+                        <div class="formula">
+                            <strong>Given data:</strong>
+                            \[b_r = \left\lceil \frac{10,000}{40} \right\rceil = 250 \text{ blocks}\]
+                            \[SC(\text{City}) = \frac{n_r}{V(\text{City})} = \frac{10,000}{50} = 200 \text{ records}\]
+                        </div>
+                        <div class="formula">
+                            <strong>b) Linear search (A1):</strong>
+                            \[\text{Min cost} = 1 \text{ block (if Budapest is in first block)}\]
+                            \[\text{Max cost} = 250 \text{ blocks (scan entire file)}\]
+                            \[\text{Avg cost} = \frac{250}{2} = 125 \text{ blocks}\]
+                            <p>Factor: Position of matching records in file</p>
+                        </div>
+                        <div class="formula">
+                            <strong>c) Binary search (A2):</strong>
+                            <p>File ordered by City (assuming Budapest records are consecutive):</p>
+                            \[\text{Find first block} = \left\lceil \log_2 250 \right\rceil = 8 \text{ blocks}\]
+                            \[\text{Read matching blocks} = \left\lceil \frac{SC}{f_r} \right\rceil - 1 = \left\lceil \frac{200}{40} \right\rceil - 1 = 5 - 1 = 4\]
+                            \[\text{Total} = 8 + 4 = 12 \text{ blocks}\]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex28">
+                    <div class="exercise-header">Exercise 28: Natural Join Size Estimation</div>
+                    <div class="exercise-question">
+                        <p>Relations: Client(\(n=10,000, f=25\)), Deposit(\(n=5,000, f=50\))</p>
+                        <p>Client_Name is key in Client, foreign key in Deposit</p>
+                        <p>\(V(\text{Client\_Name}, \text{Deposit}) = 2,500\)</p>
+                        <p><strong>a)</strong> How many clients don't have deposits?</p>
+                        <p><strong>b)</strong> Size of natural join?</p>
+                        <p><strong>c)</strong> Generalize for different scenarios</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <div class="formula">
+                            <strong>Given:</strong>
+                            \[b_{\text{Client}} = \left\lceil \frac{10,000}{25} \right\rceil = 400 \text{ blocks}\]
+                            \[b_{\text{Deposit}} = \left\lceil \frac{5,000}{50} \right\rceil = 100 \text{ blocks}\]
+                            \[SC(\text{Client\_Name}, \text{Deposit}) = \frac{5,000}{2,500} = 2 \text{ records}\]
+                        </div>
+                        <div class="formula">
+                            <strong>a) Clients without deposits:</strong>
+                            <p>\(V(\text{Client\_Name}, \text{Deposit}) = 2,500\) means 2,500 distinct clients have deposits.</p>
+                            \[\text{Clients without deposits} = 10,000 - 2,500 = 7,500\]
+                        </div>
+                        <div class="formula">
+                            <strong>b) Size of natural join:</strong>
+                            <p>Since Client_Name is KEY in Client:</p>
+                            \[|\text{Client} \bowtie \text{Deposit}| = |\text{Deposit}| = 5,000\]
+                            <p>Each Deposit record joins with exactly ONE Client record.</p>
+                        </div>
+                        <div class="formula">
+                            <strong>c) General formulas:</strong>
+                            <p><strong>i) \(R \cap S = \emptyset\):</strong> (No common attributes)</p>
+                            \[|R \bowtie S| = n_R \times n_S\]
+                            
+                            <p><strong>ii) \(R \cap S\) is key in R:</strong></p>
+                            \[|R \bowtie S| \leq n_S\]
+                            
+                            <p><strong>iii) \(R \cap S \neq \emptyset\), neither key:</strong></p>
+                            \[|R \bowtie S| = \frac{n_R \times n_S}{\max(V(A,R), V(A,S))}\]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex29">
+                    <div class="exercise-header">Exercise 29: Hash Join vs Indexed Nested Loop</div>
+                    <div class="exercise-question">
+                        <p>Relations: R(\(n_R=120,000, s_R=150\)bytes), S(\(n_S=10,000, s_S=250\)bytes)</p>
+                        <p>Block size = 2,000 bytes, hash tables fit in RAM</p>
+                        <p><strong>Find:</strong> Cost of hash join. What's the best method?</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <div class="formula">
+                            <strong>Blocking factors:</strong>
+                            \[f_R = \left\lfloor \frac{2000}{150} \right\rfloor = 13\]
+                            \[f_S = \left\lfloor \frac{2000}{250} \right\rfloor = 8\]
+                            \[b_R = \left\lceil \frac{120,000}{13} \right\rceil = 9,231 \text{ blocks}\]
+                            \[b_S = \left\lceil \frac{10,000}{8} \right\rceil = 1,250 \text{ blocks}\]
+                        </div>
+                        <div class="formula">
+                            <strong>Hash Join cost (tables in RAM):</strong>
+                            \[\text{Cost} = b_R + b_S = 9,231 + 1,250 = 10,481 \text{ blocks}\]
+                            <p>Read each file once, hash in memory, join in memory.</p>
+                        </div>
+                        <div class="formula">
+                            <strong>Block Nested Loop Join:</strong>
+                            \[\text{Cost} = b_R \times b_S + b_R = 9,231 \times 1,250 + 9,231 = 11,540,981 \text{ blocks}\]
+                            <p>Much worse!</p>
+                        </div>
+                        <div class="formula">
+                            <strong>With enough RAM (one relation fits):</strong>
+                            \[\text{Cost} = b_R + b_S = 10,481 \text{ blocks}\]
+                        </div>
+                        <p><strong>Best method:</strong> Hash join with tables in RAM = 10,481 block accesses</p>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex30">
+                    <div class="exercise-header">Exercise 30: Indexed Nested Loop - Choosing Outer Loop</div>
+                    <div class="exercise-question">
+                        <p>Natural join with B* tree primary index on join attributes</p>
+                        <p>R: \(n_R=140,000, s_R=140\)bytes, key=10bytes, ptr=4bytes</p>
+                        <p>S: \(n_S=15,000, s_S=300\)bytes, key=6bytes, ptr=4bytes</p>
+                        <p>Block size = 4,000 bytes</p>
+                        <p><strong>Which relation in outer loop? Cost of wrong choice?</strong></p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <div class="formula">
+                            <strong>Calculate blocking factors and blocks:</strong>
+                            \[f_R = \left\lfloor \frac{4000}{140} \right\rfloor = 28, \quad b_R = \left\lceil \frac{140,000}{28} \right\rceil = 5,000\]
+                            \[f_S = \left\lfloor \frac{4000}{300} \right\rfloor = 13, \quad b_S = \left\lceil \frac{15,000}{13} \right\rceil = 1,154\]
+                        </div>
+                        <div class="formula">
+                            <strong>B* tree height for R:</strong>
+                            \[f_{iR} = \left\lfloor \frac{4000+10}{4+10} \right\rfloor = 286\]
+                            \[HT_{iR} = \left\lceil \log_{286} 5,000 \right\rceil = 2\]
+                        </div>
+                        <div class="formula">
+                            <strong>B* tree height for S:</strong>
+                            \[f_{iS} = \left\lfloor \frac{4000+6}{4+6} \right\rfloor = 400\]
+                            \[HT_{iS} = \left\lceil \log_{400} 1,154 \right\rceil = 2\]
+                        </div>
+                        <div class="formula">
+                            <strong>Option 1: R in outer loop, S indexed:</strong>
+                            \[\text{Cost} = b_R + n_R \times (HT_{iS} + 1)\]
+                            \[= 5,000 + 140,000 \times 3 = 425,000 \text{ blocks}\]
+                        </div>
+                        <div class="formula">
+                            <strong>Option 2: S in outer loop, R indexed:</strong>
+                            \[\text{Cost} = b_S + n_S \times (HT_{iR} + 1)\]
+                            \[= 1,154 + 15,000 \times 3 = 46,154 \text{ blocks}\]
+                        </div>
+                        <p><strong>CORRECT: S in outer loop!</strong> Cost = 46,154 blocks</p>
+                        <p><strong>Wrong choice penalty:</strong> 425,000 - 46,154 = 378,846 extra blocks (9.2× worse!)</p>
+                        <p><strong>Rule:</strong> Put smaller relation in outer loop for indexed nested loop join.</p>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-box-title">💡 Key Takeaways from Exercises</div>
+                    <ul>
+                        <li><strong>ER Modeling:</strong> Always identify weak entities and their identifying relationships</li>
+                        <li><strong>Relational Algebra:</strong> Use difference operator for "but not" queries</li>
+                        <li><strong>Indexing:</strong> B* trees scale incredibly well - only log(n) access cost</li>
+                        <li><strong>Query Optimization:</strong> Choice of algorithm matters enormously - 10× or 100× differences!</li>
+                        <li><strong>Join Strategy:</strong> Smaller relation goes in outer loop for indexed nested loop</li>
+                    </ul>
+                </div>
+
+                <h3>Functional Dependencies Exercises</h3>
+
+                <div class="exercise" id="ex13">
+                    <div class="exercise-header">Exercise 13: Proving Transitivity Axiom</div>
+                    <div class="exercise-question">
+                        <p>Show that the transitivity axiom is true! The transitivity axiom states: if \(X \rightarrow Y\) and \(Y \rightarrow Z\), then \(X \rightarrow Z\).</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Proof from Definition:</h4>
+                        <p>According to the definition, \(X \rightarrow Y\) holds if for each two rows \(t, t' \in r(R)\) of the relation, at each point in time it is true that if \(t[X] = t'[X]\), then \(t[Y] = t'[Y]\).</p>
+
+                        <div class="formula">
+                            <strong>Step 1:</strong> Due to \(X \rightarrow Y\), if \(\exists t, t' \in r(R)\) such that \(t[X] = t'[X]\), then \(t[Y] = t'[Y]\).
+                        </div>
+
+                        <div class="formula">
+                            <strong>Step 2:</strong> Due to \(Y \rightarrow Z\), if \(\exists u, u' \in r(R)\) such that \(u[Y] = u'[Y]\), then \(u[Z] = u'[Z]\).
+                        </div>
+
+                        <div class="formula">
+                            <strong>Step 3 (Connecting):</strong> According to the first statement, if there are rows equal on \(X\), then those are equal on \(Y\) too. According to the second statement, the rows that are equal on \(Y\), are equal on \(Z\) too.
+                        </div>
+
+                        <h4>Conclusion:</h4>
+                        <p>By connecting the two statements, we can see that if (at any point in time) there are two rows that are equal on \(X\), then these will be equal on \(Z\) too. This fulfills the requirement of dependency \(X \rightarrow Z\). ∎</p>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex14">
+                    <div class="exercise-header">Exercise 14: Proving Expandability Axiom</div>
+                    <div class="exercise-question">
+                        <p>Prove the expandability axiom! The expandability axiom says: If \(X \rightarrow Y\), then \(XZ \rightarrow YZ\).</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Proof by Contradiction:</h4>
+                        <p>Let us indirectly assume that \(X \rightarrow Y\) holds, but \(XZ \rightarrow YZ\) is not true.</p>
+
+                        <div class="formula">
+                            <strong>Assumption:</strong> This means that if there exist rows \(t\) and \(t'\) in a relation \(r(R)\) so that \(t[XZ] = t'[XZ]\), then \(t[YZ] \neq t'[YZ]\).
+                        </div>
+
+                        <div class="formula">
+                            <strong>Analysis:</strong> The attributes belonging to \(Z\) are obviously identical in rows \(t\) and \(t'\), as otherwise \(t[XZ]\) and \(t'[XZ]\) could not be identical.
+                        </div>
+
+                        <div class="formula">
+                            <strong>Consequence:</strong> This means that \(t[YZ]\) and \(t'[YZ]\) differs in the value of attributes of \(Y\), that is \(t[Y] \neq t'[Y]\).
+                        </div>
+
+                        <h4>Contradiction:</h4>
+                        <p>But this is impossible! Due to the original \(X \rightarrow Y\) dependency, if \(t[X] = t'[X]\), then \(t[Y] = t'[Y]\). This is a contradiction, meaning that the original statement was true. ∎</p>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex15">
+                    <div class="exercise-header">Exercise 15: Completeness of Axiom System</div>
+                    <div class="exercise-question">
+                        <p>Is the below set of axioms complete (can all logical consequences be deduced from them)?</p>
+                        <ul>
+                            <li><strong>Rule 1:</strong> If \(X \subseteq R\) then \(X \rightarrow X\)</li>
+                            <li><strong>Rule 2:</strong> If \(X, Y \subseteq R\) and \(X \rightarrow Y\), then \(XW \rightarrow YW\) for arbitrary \(W \subseteq R\)</li>
+                            <li><strong>Rule 3:</strong> If \(X, Y, Z \subseteq R\), \(X \rightarrow Y\) and \(Y \rightarrow Z\), then \(X \rightarrow Z\)</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Answer: FALSE - The axiom system is NOT complete!</h4>
+
+                        <p>Note that rule 2 is identical to the expandability axiom, and rule 3 is identical to the transitivity axiom.</p>
+
+                        <div class="info-box">
+                            <div class="info-box-title">⚠️ The Problem</div>
+                            <p>The reflexivity axiom (trivial dependency) cannot be deduced from the rules of the provided axioms. Thus, those \(X \rightarrow Y\) dependencies where \(Y \neq X\), but which are true due to \(Y \subset X\) cannot be deducted if they have not been present in the original set of dependencies.</p>
+                        </div>
+
+                        <h4>Example with empty dependency set \(F = \emptyset\):</h4>
+                        <ul>
+                            <li><strong>Rule 1</strong> can only be used to deduce dependencies like \(X \rightarrow X\)</li>
+                            <li><strong>Rule 2</strong> expands both sides simultaneously. Since \(Y \subset X\) and we can only expand dependencies like \(X \rightarrow X\), we cannot obtain dependencies like \(X \rightarrow Y\)</li>
+                            <li><strong>Rule 3</strong> requires an attribute \(Z\) for which \(X \rightarrow Z\) and \(Z \rightarrow Y\). Such does not exist as we couldn't generate a pair of dependencies where the right hand side of one equals the left hand side of the other</li>
+                        </ul>
+
+                        <h4>Concrete Example:</h4>
+                        <p>For relational schema \(R(A, B)\) with empty dependency set, these trivial dependencies <strong>cannot be deduced</strong>:</p>
+                        <ul>
+                            <li>\(AB \rightarrow A\)</li>
+                            <li>\(AB \rightarrow B\)</li>
+                            <li>\(A \rightarrow \emptyset\), \(B \rightarrow \emptyset\), \(AB \rightarrow \emptyset\)</li>
+                        </ul>
+
+                        <p><strong>What CAN be deduced using Rule 1:</strong> \(A \rightarrow A\), \(B \rightarrow B\), \(AB \rightarrow AB\), \(\emptyset \rightarrow \emptyset\)</p>
+                        <p><strong>Rule 2</strong> expands both sides simultaneously, so \(AB \rightarrow A\) cannot be obtained.</p>
+                        <p><strong>Rule 3</strong> cannot be applied as we don't have dependencies where the LHS of one equals the RHS of another.</p>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex16">
+                    <div class="exercise-header">Exercise 16: Relation with No Non-Trivial Dependencies</div>
+                    <div class="exercise-question">
+                        <p>Provide a relation \(r\) matching schema \(R(A, B, C)\), where \(r\) has 4 rows, and no non-trivial functional dependency is true on it.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Analysis of Possible Dependencies:</h4>
+
+                        <p><strong>One attribute on the left hand side:</strong></p>
+                        <ul>
+                            <li>\(A \rightarrow B\), \(A \rightarrow C\)</li>
+                            <li>\(B \rightarrow A\), \(B \rightarrow C\)</li>
+                            <li>\(C \rightarrow A\), \(C \rightarrow B\)</li>
+                        </ul>
+
+                        <p>To break these dependencies, there must exist a pair of rows which are equal on one attribute but different on other attributes.</p>
+
+                        <h4>First attempt (3 rows):</h4>
+                        <table>
+                            <tr><th>A</th><th>B</th><th>C</th></tr>
+                            <tr><td>0</td><td>1</td><td>1</td></tr>
+                            <tr><td>1</td><td>0</td><td>1</td></tr>
+                            <tr><td>1</td><td>1</td><td>0</td></tr>
+                        </table>
+                        <p>This breaks all dependencies with one attribute on the left (rows equal on A, B, C appear with different values elsewhere).</p>
+
+                        <p><strong>Two attributes on the left hand side:</strong></p>
+                        <ul>
+                            <li>\(AB \rightarrow C\)</li>
+                            <li>\(AC \rightarrow B\)</li>
+                            <li>\(BC \rightarrow A\)</li>
+                        </ul>
+
+                        <p>The above 3 rows do NOT violate these dependencies. We need to add a 4th row:</p>
+
+                        <h4>Final Solution (4 rows):</h4>
+                        <table>
+                            <tr><th>A</th><th>B</th><th>C</th></tr>
+                            <tr><td>0</td><td>1</td><td>1</td></tr>
+                            <tr><td>1</td><td>0</td><td>1</td></tr>
+                            <tr><td>1</td><td>1</td><td>0</td></tr>
+                            <tr><td>1</td><td>1</td><td>1</td></tr>
+                        </table>
+
+                        <p><strong>Verification:</strong></p>
+                        <ul>
+                            <li>Rows 3 and 4 have same AB (1,1) but different C (0 vs 1) → breaks \(AB \rightarrow C\)</li>
+                            <li>Rows 2 and 4 have same AC (1,1) but different B (0 vs 1) → breaks \(AC \rightarrow B\)</li>
+                            <li>Rows 1 and 4 have same BC (1,1) but different A (0 vs 1) → breaks \(BC \rightarrow A\)</li>
+                        </ul>
+
+                        <p><strong>For this relation \(r(R)\), no non-trivial functional dependency holds!</strong></p>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex17">
+                    <div class="exercise-header">Exercise 17: Non-Trivial Dependency in 3-Row Relation</div>
+                    <div class="exercise-question">
+                        <p>Relation \(r\) matches schema \(R(A, B, C)\), and has 3 rows. Prove that there exists a non-trivial functional dependency that \(r\) fulfills!</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Proof by Contradiction:</h4>
+                        <p>Let's try to exclude the dependencies having two attributes on the left hand side. This can be done by inserting pairs of rows \(t, t' \in r(R)\), which:</p>
+                        <ul>
+                            <li>are equal on \(AB\), but not on \(C\) (breaks \(AB \rightarrow C\))</li>
+                            <li>are equal on \(AC\), but not on \(B\) (breaks \(AC \rightarrow B\))</li>
+                            <li>are equal on \(BC\), but not on \(A\) (breaks \(BC \rightarrow A\))</li>
+                        </ul>
+
+                        <div class="formula">
+                            <strong>Step 1:</strong> We need at least two rows equal on \(AB\), but inequal on \(C\).
+                        </div>
+
+                        <div class="formula">
+                            <strong>Step 2:</strong> After this, we need a pair of rows equal on \(AC\), but not on \(B\). Since the previous two rows were inequal on \(C\), we need to find a new pair of rows.
+                        </div>
+
+                        <div class="formula">
+                            <strong>Step 3:</strong> We can have at most 3 rows in total, so we can only introduce a single row - which has to be equal on \(AC\) with one of the previous rows.
+                        </div>
+
+                        <h4>The Contradiction:</h4>
+                        <p>This however means that all three rows are equal on attribute \(A\). Thus, we <strong>cannot</strong> introduce a pair of rows that break dependency \(BC \rightarrow A\).</p>
+
+                        <table>
+                            <tr><th>A</th><th>B</th><th>C</th></tr>
+                            <tr><td>1</td><td>1</td><td>0</td></tr>
+                            <tr><td>1</td><td>1</td><td>1</td></tr>
+                            <tr><td>1</td><td>0</td><td>1</td></tr>
+                        </table>
+
+                        <p>All rows have A=1, so \(BC \rightarrow A\) is satisfied!</p>
+
+                        <h4>Conclusion:</h4>
+                        <p>A 3-row relation \(r\) cannot violate all possible functional dependencies, thus we can always include a non-trivial dependency that holds on the given relation.</p>
+
+                        <div class="tip-box">
+                            <div class="tip-box-title">💡 Important Note</div>
+                            <p>It is not necessary for the rows corresponding to a given functional dependency to appear in \(r\). A dependency can hold even if there are no rows in the relation corresponding to it (vacuous truth).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Normal Forms Exercises</h3>
+
+                <div class="exercise" id="ex18">
+                    <div class="exercise-header">Exercise 18: Highest Normal Form</div>
+                    <div class="exercise-question">
+                        <p>What is the highest normal form of schema \(R(A, B, C, D)\), if \(F = \{C \rightarrow B, B \rightarrow D, AB \rightarrow AC, CD \rightarrow B\}\)?</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Answer: 1NF (First Normal Form)</h4>
+
+                        <p>To determine the highest normal form, we need to find the keys and analyze the dependencies.</p>
+
+                        <div class="formula">
+                            <strong>Finding Keys:</strong>
+                            <p>From \(C \rightarrow B\) and \(B \rightarrow D\), we get \(C \rightarrow BD\) (transitivity)</p>
+                            <p>So \(C^+ = \{C, B, D\}\) - missing A</p>
+                            <p>Thus \(AC^+ = \{A, C, B, D\} = R\) - AC is a candidate key</p>
+                        </div>
+
+                        <h4>Checking Normal Forms:</h4>
+                        <ul>
+                            <li><strong>2NF Check:</strong> Is there partial dependency on a prime attribute?
+                                <br>\(C \rightarrow B\): C is part of key AC, B is not part of key → <strong>Partial dependency!</strong></li>
+                        </ul>
+
+                        <p>Since there's a partial dependency, the relation is <strong>NOT in 2NF</strong>, so the highest normal form is <strong>1NF</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex19">
+                    <div class="exercise-header">Exercise 19: ISTQ Schema Normal Form</div>
+                    <div class="exercise-question">
+                        <p>What is the highest normal form of \(R(I, S, T, Q)\) if its dependency set is \(F = \{I \rightarrow Q, ST \rightarrow Q, IS \rightarrow T, QS \rightarrow I\}\)?</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Answer: 3NF (Third Normal Form)</h4>
+
+                        <div class="formula">
+                            <strong>Finding Candidate Keys:</strong>
+                            <p>Notice that S appears on the right side only in \(IS \rightarrow T\), so S must be in every key.</p>
+                            <p>Try IS: \(IS^+ = \{I, S, T, Q\} = R\) ✓ IS is a candidate key</p>
+                            <p>Try QS: \(QS^+ = \{Q, S, I, T\} = R\) ✓ QS is a candidate key</p>
+                        </div>
+
+                        <h4>Prime Attributes: I, S, Q (appear in some candidate key)</h4>
+                        <h4>Non-Prime Attribute: T</h4>
+
+                        <div class="formula">
+                            <strong>2NF Check:</strong> No partial dependencies on non-prime attributes
+                            <br>- \(I \rightarrow Q\): Q is prime, so doesn't matter for 2NF
+                            <br>- \(ST \rightarrow Q\): ST is not part of a key (T is non-prime)
+                            <br>- \(IS \rightarrow T\): Full dependency (IS is entire key)
+                            <br>- \(QS \rightarrow I\): Full dependency (QS is entire key)
+                            <br><strong>Result: In 2NF ✓</strong>
+                        </div>
+
+                        <div class="formula">
+                            <strong>3NF Check:</strong> No transitive dependencies on non-prime attributes
+                            <br>T is the only non-prime attribute, and T is directly determined by IS (key)
+                            <br><strong>Result: In 3NF ✓</strong>
+                        </div>
+
+                        <div class="formula">
+                            <strong>BCNF Check:</strong> Every determinant must be a superkey
+                            <br>- \(I \rightarrow Q\): I is not a superkey ✗
+                            <br><strong>Result: NOT in BCNF</strong>
+                        </div>
+
+                        <p>The highest normal form is <strong>3NF</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex20">
+                    <div class="exercise-header">Exercise 20: BCNF Property Proof</div>
+                    <div class="exercise-question">
+                        <p>Prove that if \(R\) is not BCNF, then \(\exists A, B\) where \(A, B \in R\) and \(R \setminus AB \rightarrow A\).</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Proof:</h4>
+
+                        <div class="formula">
+                            <strong>Given:</strong> \(R\) is not BCNF, thus there is a non-trivial dependency \(X \rightarrow A\), where \(X\) is not a superkey.
+                        </div>
+
+                        <div class="formula">
+                            <strong>Step 1:</strong> Since \(X\) is not a superkey, there is at least one attribute \(B\), which is not defined by \(X\).
+                        </div>
+
+                        <div class="formula">
+                            <strong>Step 2:</strong> This means that \(X \subseteq R \setminus AB\), as neither \(A\) nor \(B\) can be an element of \(X\).
+                            <br>(A cannot be in X because \(X \rightarrow A\) would be trivial if A ∈ X)
+                            <br>(B cannot be in X because X doesn't determine B)
+                        </div>
+
+                        <div class="formula">
+                            <strong>Step 3:</strong> In dependency \(X \rightarrow A\), let us add all those elements of \(R \setminus AB\) to \(X\), which are not already included in it.
+                        </div>
+
+                        <h4>Result:</h4>
+                        <p>The so-obtained dependency is the exact same one that we have been looking for, as we have been forming its left hand side until it became equal to \(R \setminus AB\).</p>
+
+                        <p>The obtained dependency is true, as \(X\) defines \(A\), and this latter cannot be made false by adding further elements to the left hand side of the dependency.</p>
+
+                        <div class="tip-box">
+                            <div class="tip-box-title">💡 Key Insight</div>
+                            <p>This is a direct consequence of the expandability and the decomposition rule. If \(P \rightarrow Q\) is true, then \(PS \rightarrow Q\) is true as well (expand both sides with S, then decompose the right hand side).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Transaction Management Exercises</h3>
+
+                <div class="exercise" id="ex31">
+                    <div class="exercise-header">Exercise 31: Serializable Scheduling</div>
+                    <div class="exercise-question">
+                        <p>Consider the following scheduling of transactions \(T_1, T_2, T_3, T_4\):</p>
+                        <div class="formula">
+                            \(T_2\): RLOCK A; \(T_3\): RLOCK A; \(T_2\): WLOCK B; \(T_2\): UNLOCK A;<br>
+                            \(T_3\): WLOCK A; \(T_2\): UNLOCK B; \(T_1\): RLOCK B; \(T_3\): UNLOCK A;<br>
+                            \(T_4\): RLOCK B; \(T_1\): RLOCK A; \(T_4\): UNLOCK B; \(T_1\): WLOCK C;<br>
+                            \(T_1\): UNLOCK A; \(T_4\): WLOCK A; \(T_4\): UNLOCK A; \(T_1\): UNLOCK B;<br>
+                            \(T_1\): UNLOCK C.
+                        </div>
+                        <p>Draw the precedence graph and decide whether the scheduling is serializable!</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Answer: Yes, the scheduling is serializable!</h4>
+
+                        <p>The serial equivalent is: \(T_2 \rightarrow T_3 \rightarrow T_1 \rightarrow T_4\)</p>
+
+                        <h4>Building the Precedence Graph:</h4>
+                        <p>Analyze conflicts (operations on same data item where at least one is WRITE):</p>
+                        <ul>
+                            <li><strong>Item A:</strong>
+                                <br>T2 reads A, T3 writes A → T2 → T3
+                                <br>T3 writes A, T1 reads A → T3 → T1
+                                <br>T1 reads A, T4 writes A → T1 → T4
+                            </li>
+                            <li><strong>Item B:</strong>
+                                <br>T2 writes B, T1 reads B → T2 → T1
+                                <br>T1 reads B, T4 reads B → (no conflict, both reads)
+                            </li>
+                        </ul>
+
+                        <h4>Precedence Graph:</h4>
+                        <div class="formula">
+                            T2 → T3 → T1 → T4
+                            <br>T2 → T1 (redundant, already have T2 → T3 → T1)
+                        </div>
+
+                        <p><strong>No cycles in the graph!</strong> Therefore, the schedule is <strong>serializable</strong> with serial order: T2, T3, T1, T4.</p>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex32">
+                    <div class="exercise-header">Exercise 32: Non-Serializable Schedule</div>
+                    <div class="exercise-question">
+                        <p>Consider this schedule:</p>
+                        <table>
+                            <tr><th>\(T_1\)</th><th>\(T_2\)</th></tr>
+                            <tr><td>WRITE B</td><td></td></tr>
+                            <tr><td></td><td>WRITE A</td></tr>
+                            <tr><td>WRITE A</td><td></td></tr>
+                            <tr><td></td><td>WRITE B</td></tr>
+                        </table>
+                        <p>Is this schedule serializable? Draw the precedence graph.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Answer: The scheduling is NOT serializable!</h4>
+
+                        <p>At the end of the scheduling:</p>
+                        <ul>
+                            <li>It was \(T_1\) who modified item \(A\) most recently</li>
+                            <li>It was \(T_2\) who modified item \(B\) most recently</li>
+                        </ul>
+
+                        <h4>Analysis of Serial Schedules:</h4>
+                        <ul>
+                            <li><strong>\(T_1 T_2\):</strong> Last to modify both is \(T_2\) ✗</li>
+                            <li><strong>\(T_2 T_1\):</strong> Last to modify both is \(T_1\) ✗</li>
+                        </ul>
+
+                        <h4>Precedence Graph:</h4>
+                        <img src="assets/images/2025_11_17_3e411b347a9f7ed15910g-24.jpg" alt="Precedence graph showing cycle between T1 and T2" style="max-width: 300px; display: block; margin: 1rem auto;">
+
+                        <div class="formula">
+                            <strong>Conflicts:</strong>
+                            <br>T2 writes A before T1 writes A → T2 → T1
+                            <br>T1 writes B before T2 writes B → T1 → T2
+                        </div>
+
+                        <p><strong>CYCLE detected:</strong> T1 → T2 → T1</p>
+
+                        <div class="info-box">
+                            <div class="info-box-title">⚠️ Important Consequence</div>
+                            <p>In case of 2PL: We know that if each transaction of a legal schedule follows 2PL, then the schedule is serializable. Thus, if a schedule is not serializable, there cannot be a legal schedule composed of 2PL transactions.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex33">
+                    <div class="exercise-header">Exercise 33: Strict Two-Phase Locking</div>
+                    <div class="exercise-question">
+                        <p>Is the following transaction strict 2PL? If not, modify it to make it strict 2PL. What does this protocol guarantee?</p>
+                        <div class="formula">
+                            LOCK A<br>
+                            READ A<br>
+                            A = A × 2<br>
+                            WRITE A<br>
+                            COMMIT<br>
+                            UNLOCK A
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Answer: The transaction is 2PL, but NOT strict 2PL!</h4>
+
+                        <p><strong>Problem:</strong> In strict 2PL, all locks must be held until AFTER the commit point. Here, UNLOCK happens after COMMIT, which is correct, but WRITE happens before COMMIT.</p>
+
+                        <h4>Modified Version (Strict 2PL):</h4>
+                        <table>
+                            <tr><td>LOCK A</td><td>synchronization point</td></tr>
+                            <tr><td>READ A</td><td></td></tr>
+                            <tr><td>A = A × 2</td><td></td></tr>
+                            <tr><td>COMMIT</td><td><strong>commit point</strong></td></tr>
+                            <tr><td>WRITE A</td><td>writing over</td></tr>
+                            <tr><td>UNLOCK A</td><td></td></tr>
+                        </table>
+
+                        <p><strong>By exchanging WRITE A and COMMIT lines, the transaction becomes strict 2PL.</strong></p>
+
+                        <h4>What the protocol guarantees:</h4>
+                        <ul>
+                            <li><strong>Serializability:</strong> 2PL ensures conflict-serializable schedules</li>
+                            <li><strong>Avoids cascading aborts:</strong> Strict 2PL prevents dirty reads since writes are only visible after commit</li>
+                            <li><strong>Recoverable:</strong> If transaction aborts, changes haven't been written to disk yet</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex34">
+                    <div class="exercise-header">Exercise 34: Timestamp-Based Scheduling</div>
+                    <div class="exercise-question">
+                        <p>Is the below scheduling serializable with timestamp-based (R/W) scheduling?</p>
+                        <table>
+                            <tr><th></th><th>\(T_1\)<br>\(t(T_1) = 10\)</th><th>\(T_2\)<br>\(t(T_2) = 20\)</th></tr>
+                            <tr><td>(1)</td><td>READ A</td><td></td></tr>
+                            <tr><td>(2)</td><td></td><td>WRITE A</td></tr>
+                            <tr><td>(3)</td><td>WRITE A</td><td></td></tr>
+                        </table>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Initial Timestamps:</h4>
+                        <p>\(t(T_1) = 10\), \(t(T_2) = 20\)</p>
+                        <p>R(A) = 0, W(A) = 0 (initially)</p>
+
+                        <h4>Step-by-Step Execution:</h4>
+                        <table>
+                            <tr><th>Step</th><th>Operation</th><th>Check</th><th>R(A)</th><th>W(A)</th></tr>
+                            <tr>
+                                <td>(1)</td>
+                                <td>T1: READ A</td>
+                                <td>t(T1)=10 ≥ W(A)=0 ✓</td>
+                                <td>10</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>(2)</td>
+                                <td>T2: WRITE A</td>
+                                <td>t(T2)=20 ≥ R(A)=10 ✓<br>t(T2)=20 ≥ W(A)=0 ✓</td>
+                                <td>10</td>
+                                <td>20</td>
+                            </tr>
+                            <tr>
+                                <td>(3)</td>
+                                <td>T1: WRITE A</td>
+                                <td>t(T1)=10 < W(A)=20 ✗</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+
+                        <h4>At step (3): WRITE A causes an abort!</h4>
+                        <p>Since \(t(T_1) = 10 < W(A) = 20\), the transaction must be aborted.</p>
+
+                        <div class="info-box">
+                            <div class="info-box-title">💡 Thomas' Write Rule</div>
+                            <p>However, if \(R(A) \leq t(T) < W(A)\), the transaction does not necessarily have to be aborted. In this case:</p>
+                            <ul>
+                                <li>Timestamps shall not be modified</li>
+                                <li>The item shall not be written</li>
+                                <li>The write operation is simply skipped</li>
+                            </ul>
+                        </div>
+
+                        <h4>Why Thomas' Write Rule Works:</h4>
+                        <p>At the time of T1's attempted write, item A has already been written by T2 (started later). If in the future, a transaction V tries to read A:</p>
+                        <ul>
+                            <li>If t(V) < W(A)=20: V aborts (can't read future value)</li>
+                            <li>If t(V) ≥ W(A)=20: V reads T2's value</li>
+                        </ul>
+                        <p>In neither case will T1's value be necessary!</p>
+
+                        <h4>Using Thomas' Write Rule:</h4>
+                        <p>If we don't modify timestamps and omit the write in step (3), the effect is identical to serial schedule \(T_1, T_2\) (the older transaction's write is overwritten by the newer one).</p>
+
+                        <div class="tip-box">
+                            <div class="tip-box-title">⚠️ Important Caveat</div>
+                            <p>Thomas' Write Rule can only be used if the transaction with the greater timestamp has already committed! If T2 later aborts, we would need T1's value which was never written. Use a commit bit C(X) to track whether the last writer has committed.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex4">
+                    <div class="exercise-header">Exercise 4: Hospital Patient Database</div>
+                    <div class="exercise-question">
+                        <p>Design an ER diagram for:</p>
+                        <ul>
+                            <li>A patient might have multiple diseases; there are diseases which nobody has</li>
+                            <li>Each patient is treated at a single facility, by possibly multiple doctors</li>
+                            <li>A doctor might have multiple patients at different facilities</li>
+                            <li>A facility might be empty and belongs to a single hospital</li>
+                            <li>One doctor is employed by a maximum of 3 hospitals</li>
+                            <li>A hospital is always led by a director who is a doctor of that hospital, has an economy degree, and does not work in other hospitals</li>
+                        </ul>
+                        <p>Define entities, relationships, cardinalities, and keys!</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>ER Diagram:</h4>
+                        <img src="assets/images/2025_11_17_bce3bd94d5331fb8b735g-09.jpg" alt="Hospital ER Diagram" style="max-width: 100%; display: block; margin: 1rem auto;">
+
+                        <h4>Important Notes:</h4>
+                        <ul>
+                            <li>The exercise didn't specify whether facility identifiers are unique globally or only within the same hospital. Making Facility a weak entity set ensures each facility belongs to exactly one hospital.</li>
+                            <li>The solution cannot model that the director is also an employee of the given hospital. One solution: Transform Works At to a weak entity set between Doctor and Hospital, and create Director as a specialized entity set of Works At.</li>
+                            <li>We have not defined cardinality for ternary relationship sets, so Treats cannot model that a patient is treated in a single facility.</li>
+                            <li>The diagram cannot model that a doctor is employed by at most 3 hospitals - this must be a side constraint or use 3 separate many-to-one relationships:</li>
+                        </ul>
+
+                        <img src="assets/images/2025_11_17_bce3bd94d5331fb8b735g-10.jpg" alt="Alternative representation for max 3 hospitals" style="max-width: 400px; display: block; margin: 1rem auto;">
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex5">
+                    <div class="exercise-header">Exercise 5: Hospital Departments</div>
+                    <div class="exercise-question">
+                        <p>Design an ER diagram for a hospital with:</p>
+                        <ul>
+                            <li>Several departments, each with a department leader chief doctor and arbitrary number of chief doctors</li>
+                            <li>If no department leader, there's a commissioned department leader (might not be chief doctor)</li>
+                            <li>Employees: doctors, nurses (work at specific departments), support staff (can belong to hospital directly)</li>
+                            <li>Each employee has ID; doctors also have Doctors' Association ID</li>
+                            <li>Hospital led by a doctor with economy degree who works only there</li>
+                            <li>Patients can be treated in multiple departments with different diseases</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>ER Diagram:</h4>
+                        <img src="assets/images/2025_11_17_bce3bd94d5331fb8b735g-11.jpg" alt="Hospital Departments ER Diagram" style="max-width: 100%; display: block; margin: 1rem auto;">
+
+                        <h4>Relationship Abbreviations:</h4>
+                        <ul>
+                            <li><strong>WORKS_D:</strong> works at department</li>
+                            <li><strong>WORKS_H:</strong> works at hospital</li>
+                            <li><strong>LEADS_D:</strong> leads department</li>
+                            <li><strong>LEADS_H:</strong> leads hospital</li>
+                        </ul>
+
+                        <p>Department leader chief doctors and commissioned department leaders are identified by the position attribute.</p>
+
+                        <p>Similar to Exercise 2, this solution cannot model that the director is an employee of the directed hospital.</p>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex6">
+                    <div class="exercise-header">Exercise 6: Ternary to Binary Relationship Transformation</div>
+                    <div class="exercise-question">
+                        <p>How can an ER diagram containing a ternary relationship set be transformed to an equivalent ER diagram that only contains binary relationship sets?</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Original Ternary Relationship:</h4>
+                        <img src="assets/images/2025_11_17_bce3bd94d5331fb8b735g-12.jpg" alt="Original ternary relationship" style="max-width: 400px; display: block; margin: 1rem auto;">
+
+                        <h4>Transformation Method:</h4>
+                        <p>The ternary relationship set is transformed to <strong>three binary relationship sets</strong>. For this, we create an entity set R, representing the relationship set.</p>
+
+                        <img src="assets/images/2025_11_17_bce3bd94d5331fb8b735g-12(1).jpg" alt="Transformed binary relationships" style="max-width: 100%; display: block; margin: 1rem auto;">
+
+                        <h4>Key Points:</h4>
+                        <ul>
+                            <li>The attributes of the relationship set generally do not provide uniqueness</li>
+                            <li>R will be a <strong>weak entity set</strong></li>
+                            <li>Elements of R are identified by the keys of entity sets E1, E2, and E3</li>
+                            <li>Each relationship from R to an entity is a many-to-one identifying relationship</li>
+                        </ul>
+
+                        <div class="tip-box">
+                            <div class="tip-box-title">💡 When to Use This</div>
+                            <p>This transformation is useful when your database system only supports binary relationships, or when you need to add attributes to the relationship itself.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex10">
+                    <div class="exercise-header">Exercise 10: Natural Join Result Size</div>
+                    <div class="exercise-question">
+                        <p>Given relations \(r(R)\) and \(s(S)\) with schemas \(R(A, B)\) and \(S(B, C)\) respectively. \(r\) has \(n_r\) different rows, \(s\) has \(n_s\) different rows.</p>
+                        <p>What is the maximal and minimal number of rows in the natural join (as a function of \(n_r\) and \(n_s\)), if:</p>
+                        <ul>
+                            <li>A is a key in R</li>
+                            <li>B is a key in R</li>
+                            <li>B is a key in both R and S</li>
+                            <li>A is a key in R, and B is a key in S</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <p><strong>Minimum for all cases:</strong> 0 rows (if there's no common value of attribute B in r(R) and s(S))</p>
+
+                        <div class="formula">
+                            <strong>Case 1: A is a key in R</strong>
+                            <p>Maximum: \(n_r \cdot n_s\)</p>
+                            <p>If the B values in each row of r and s are equal, every row in r joins with every row in s.</p>
+                        </div>
+
+                        <div class="formula">
+                            <strong>Case 2: B is a key in R</strong>
+                            <p>Maximum: \(n_s\)</p>
+                            <p>Since B is a key in R, r's attribute values on B are unique. Thus, we can find at most one matching row in r for each row of s.</p>
+                        </div>
+
+                        <div class="formula">
+                            <strong>Case 3: B is a key in both R and S</strong>
+                            <p>Maximum: \(\min(n_r, n_s)\)</p>
+                            <p>The join attribute is unique in each row, in both relations. After the join, rows can make up at most as many pairs as the relation with fewer rows has.</p>
+                        </div>
+
+                        <div class="formula">
+                            <strong>Case 4: A is a key in R, B is a key in S</strong>
+                            <p>Maximum: \(n_r\)</p>
+                            <p>From the viewpoint of result size, it's irrelevant that A is a key. This is the opposite of Case 2.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex11">
+                    <div class="exercise-header">Exercise 11: Product Database Queries</div>
+                    <div class="exercise-question">
+                        <p><strong>Schemas:</strong></p>
+                        <ul>
+                            <li>PRODUCT(MANUFACTURER, MODEL, TYPE)</li>
+                            <li>PC(MODEL, SPEED, RAM, HDD, CD, PRICE)</li>
+                            <li>LAPTOP(MODEL, SPEED, RAM, HDD, SCREEN, PRICE)</li>
+                            <li>PRINTER(MODEL, COLOR, TYPE, PRICE)</li>
+                        </ul>
+                        <p>Write relational algebra expressions for:</p>
+                        <ol>
+                            <li>Which PC models have speed ≥ 1500?</li>
+                            <li>Which manufacturers produce laptops with HDD ≥ 1000 GB?</li>
+                            <li>Model number and price of each product made by manufacturer B</li>
+                            <li>Manufacturers that produce laptops but not PCs</li>
+                            <li>Manufacturers that produce at least two different PCs/laptops with speed ≥ 3 GHz</li>
+                        </ol>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <div class="formula">
+                            <strong>1. PC models with speed ≥ 1500:</strong>
+                            \[r = \pi_{\text{MODEL}}(\sigma_{\text{SPEED} \geq 1500}(\text{PC}))\]
+                        </div>
+
+                        <div class="formula">
+                            <strong>2. Manufacturers with laptops HDD ≥ 1000:</strong>
+                            \[r = \pi_{\text{MANUFACTURER}}(\sigma_{\text{HDD} \geq 1000}(\text{LAPTOP}) \bowtie \text{PRODUCT})\]
+                        </div>
+
+                        <div class="formula">
+                            <strong>3. Model and price for manufacturer B:</strong>
+                            \[r = \sigma_{\text{MANUFACTURER}='B'}(\]
+                            \[\pi_{\text{MANUFACTURER,MODEL,PRICE}}(\text{PRODUCT} \bowtie \text{PC}) \cup\]
+                            \[\pi_{\text{MANUFACTURER,MODEL,PRICE}}(\text{PRODUCT} \bowtie \text{LAPTOP}) \cup\]
+                            \[\pi_{\text{MANUFACTURER,MODEL,PRICE}}(\text{PRODUCT} \bowtie \text{PRINTER}))\]
+                        </div>
+
+                        <div class="formula">
+                            <strong>4. Manufacturers with laptops but not PCs:</strong>
+                            \[\pi_{\text{MANUFACTURER}}(\text{PRODUCT} \bowtie \text{LAPTOP}) - \pi_{\text{MANUFACTURER}}(\text{PRODUCT} \bowtie \text{PC})\]
+                        </div>
+
+                        <div class="formula">
+                            <strong>5. At least two PCs/laptops with speed ≥ 3 GHz:</strong>
+                            <p>Step 1: Get all fast PC/laptop models</p>
+                            \[s = \sigma_{\text{SPEED} \geq 3000}(\pi_{\text{MODEL,SPEED}}(\text{PC}) \cup \pi_{\text{MODEL,SPEED}}(\text{LAPTOP})) \bowtie \text{PRODUCT}\]
+                            <p>Step 2: Get manufacturer-model pairs</p>
+                            \[t = \pi_{\text{MANUFACTURER,MODEL}}(s)\]
+                            <p>Step 3: Self-join to find manufacturers with multiple models</p>
+                            \[r = \pi_{\text{MANUFACTURER}}(t \bowtie_{\text{MANUF}_1 = \text{MANUF}_2 \land \text{MODEL}_1 \neq \text{MODEL}_2} t)\]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex12">
+                    <div class="exercise-header">Exercise 12: Division Operation (Beer Example)</div>
+                    <div class="exercise-question">
+                        <p>Given relations: likes(person, beer), sells(pub, beer), visits(person, pub)</p>
+                        <p>Using relational algebra, express:</p>
+                        <ul>
+                            <li>a) List of beers liked by every person visiting the bars selling the beer</li>
+                            <li>b) List of persons who like each beer sold in all pubs visited by them</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <div class="formula">
+                            <strong>a) Beers liked by all visitors to bars selling them:</strong>
+                            <p>This uses the division pattern: find what's NOT universally true, then subtract.</p>
+                            \[\pi_{\text{beer}}(\text{sells}) - \pi_{\text{beer}}(\pi_{\text{person,beer}}(\text{sells} \bowtie \text{visits}) - \text{likes})\]
+                        </div>
+
+                        <h4>Explanation:</h4>
+                        <ul>
+                            <li>\(\pi_{\text{person,beer}}(\text{sells} \bowtie \text{visits})\) = all (person, beer) pairs where person visits a pub selling that beer</li>
+                            <li>Subtract likes = (person, beer) pairs where person should like the beer but doesn't</li>
+                            <li>Project to beer = beers not liked by all their visitors</li>
+                            <li>Subtract from all beers = beers liked by ALL their visitors</li>
+                        </ul>
+
+                        <div class="formula">
+                            <strong>b) Persons who like each beer in all pubs they visit:</strong>
+                            <p>Similar logic but from the person perspective.</p>
+                        </div>
+
+                        <div class="tip-box">
+                            <div class="tip-box-title">💡 Division Pattern</div>
+                            <p>To find "X that satisfy condition for ALL Y", use: ALL_X - (POSSIBLE_XY - ACTUAL_XY) projected to X</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex24">
+                    <div class="exercise-header">Exercise 24: Dense Index with Sparse Index on Top</div>
+                    <div class="exercise-question">
+                        <p>A file shall be stored using a dense index and a sparse index built on top of the dense index. Give a reasonable estimation for the number of necessary blocks:</p>
+                        <ul>
+                            <li>File contains \(3 \times 10^6\) records</li>
+                            <li>One record is 300 bytes</li>
+                            <li>One block is 1000 bytes</li>
+                            <li>Key size is 45 bytes</li>
+                            <li>Pointer size is 5 bytes</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <div class="formula">
+                            <strong>Data file:</strong>
+                            \[f_r = \lfloor 1000/300 \rfloor = 3 \text{ records/block}\]
+                            \[b_r = \lceil 3 \times 10^6 / 3 \rceil = 10^6 \text{ blocks}\]
+                        </div>
+
+                        <div class="formula">
+                            <strong>Dense index (1 entry per record):</strong>
+                            \[f_i = \lfloor 1000/(45+5) \rfloor = 20 \text{ entries/block}\]
+                            \[\text{Dense index blocks} = \lceil 3 \times 10^6 / 20 \rceil = 1.5 \times 10^5 \text{ blocks}\]
+                        </div>
+
+                        <div class="formula">
+                            <strong>Sparse index on dense index (1 entry per dense index block):</strong>
+                            \[\text{Sparse index blocks} = \lceil 1.5 \times 10^5 / 20 \rceil = 7500 \text{ blocks}\]
+                        </div>
+
+                        <div class="formula">
+                            <strong>Total blocks:</strong>
+                            \[10^6 + 1.5 \times 10^5 + 7500 = 1,157,500 \text{ blocks}\]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise" id="ex25">
+                    <div class="exercise-header">Exercise 25: Two-Key Index with B* Tree</div>
+                    <div class="exercise-question">
+                        <p>One billion records shall be stored. Record size = 100 bytes, block size = 4000 bytes, block operation = 5ms. Two keys, both 10 bytes. Pointers = 32 bits. Only one block fits in RAM.</p>
+                        <ul>
+                            <li>a) Suggest storage method for searching with both keys (max 40ms, support interval searches)</li>
+                            <li>b) A search returns 8% of all records. Suggest most efficient search method.</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <h4>Given:</h4>
+                        <p>\(n_r = 10^9\), \(s_r = 100\) bytes, \(b = 4000\) bytes, \(k_1 = k_2 = 10\) bytes, \(p = 4\) bytes</p>
+
+                        <div class="formula">
+                            <strong>Index blocking factor:</strong>
+                            \[f_i = \lfloor 4000/(10+4) \rfloor = 285 \text{ entries/block}\]
+                        </div>
+
+                        <h4>a) Solution: Dense indices with B* trees</h4>
+                        <p>Hash organization is excluded due to interval search requirement. Build dense indices for each search key, then B* tree on top of each.</p>
+
+                        <img src="assets/images/2025_11_17_bce3bd94d5331fb8b735g-18.jpg" alt="B* tree structure diagram" style="max-width: 100%; display: block; margin: 1rem auto;">
+
+                        <div class="formula">
+                            <strong>Dense indices:</strong> \(10^9\) entries need \(\lceil 10^9/285 \rceil = 3,508,772\) blocks
+                        </div>
+
+                        <div class="formula">
+                            <strong>B* tree:</strong> Branching factor = 286 (285 keys + 1 extra pointer)
+                            <br>Height = \(\lceil \log_{286} 3,508,772 \rceil = 3\) levels
+                        </div>
+
+                        <div class="formula">
+                            <strong>Search cost:</strong> \(3 + 1 + 1 = 5\) block accesses = 25ms ✓ (within 40ms limit)
+                        </div>
+
+                        <h4>b) Returning 8% of records</h4>
+                        <p>\(8\% \times 10^9 = 8 \times 10^7\) records</p>
+
+                        <div class="formula">
+                            <strong>Using index:</strong> Each record needs 5 block accesses
+                            <br>\((8 \times 10^7) \times 5 = 4 \times 10^8\) accesses = 23+ days!
+                        </div>
+
+                        <div class="formula">
+                            <strong>Scanning dense index:</strong> Read all 3,508,772 index blocks + 8×10^7 data blocks
+                            <br>\(\approx 4.8\) days
+                        </div>
+
+                        <div class="formula">
+                            <strong>BEST: Full table scan!</strong>
+                            \[f_r = \lfloor 4000/100 \rfloor = 40\]
+                            \[b_r = \lceil 10^9/40 \rceil = 2.5 \times 10^7 \text{ blocks}\]
+                            <br>Time = \(2.5 \times 10^7 \times 5\text{ms} \approx 1.5\) days
+                        </div>
+
+                        <div class="tip-box">
+                            <div class="tip-box-title">💡 Surprising Result</div>
+                            <p>When returning large portions of data, sequential table scan beats indexed access! The overhead of traversing indexes becomes dominant.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">Exercise 36: Bucket Hashing Analysis</div>
+                    <div class="exercise-question">
+                        <p>1,000,000 records stored using bucket hashing. Record = 110 bytes, block = 3000 bytes, key = 25 bytes, pointer = 64 bits = 8 bytes. Block access = 5ms. Max record access = 20ms. Hash table fits in RAM, hash function spreads evenly.</p>
+                        <ul>
+                            <li>a) Average record access time?</li>
+                            <li>b) How many bytes does the hash table occupy in RAM?</li>
+                            <li>c) Extra RAM needed to reduce access time by half?</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution">
+                        <div class="formula">
+                            <strong>a) Average access time:</strong>
+                            <p>Since hash table is in RAM, we only read bucket blocks from disk.</p>
+                            <p>Max 20ms / 5ms per block = 4 blocks per bucket maximum</p>
+                            \[f_r = \lfloor 3000/110 \rfloor = 27 \text{ records/block}\]
+                            <p>One bucket contains at most \(4 \times 27 = 108\) records</p>
+                            <p>Best case: 1 block access, Worst case: 4 block accesses</p>
+                            \[t_{\text{avg}} = \frac{1+4}{2} \times 5\text{ms} = 12.5\text{ms}\]
+                        </div>
+
+                        <div class="formula">
+                            <strong>b) Hash table size in RAM:</strong>
+                            \[B = \lceil 10^6/108 \rceil = 9260 \text{ buckets}\]
+                            \[\text{Hash table size} = 9260 \times 8 = 74,080 \text{ bytes}\]
+                        </div>
+
+                        <div class="formula">
+                            <strong>c) Reducing access time by half:</strong>
+                            <p>Double the number of buckets to halve bucket size:</p>
+                            \[B' = 18520 \text{ buckets}\]
+                            \[\text{Records per bucket} = \lceil 10^6/18520 \rceil = 54\]
+                            \[\text{Blocks per bucket} = \lceil 54/27 \rceil = 2\]
+                            \[t_{\text{avg}} = \frac{1+2}{2} \times 5\text{ms} = 7.5\text{ms}\]
+                            <p>Extra RAM needed: 74,080 bytes (hash table doubles)</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        <section id="formulas" class="section">
+            <div class="card">
+                <h2>Formula Quick Reference</h2>
+                
+                <h3>Physical Storage Formulas</h3>
+                <table>
+                    <tr>
+                        <th>Formula</th>
+                        <th>Description</th>
+                        <th>When to Use</th>
+                    </tr>
+                    <tr>
+                        <td>\(f_r = \lfloor b/s_r \rfloor\)</td>
+                        <td>Blocking factor (records/block)</td>
+                        <td>Always calculate first</td>
+                    </tr>
+                    <tr>
+                        <td>\(b_r = \lceil n_r/f_r \rceil\)</td>
+                        <td>Number of blocks</td>
+                        <td>Data file size calculation</td>
+                    </tr>
+                    <tr>
+                        <td>\(f_i = \lfloor b/(p+k) \rfloor\)</td>
+                        <td>Index blocking factor (sparse)</td>
+                        <td>Sparse index calculations</td>
+                    </tr>
+                    <tr>
+                        <td>\(f_i = \lfloor (b+k)/(p+k) \rfloor\)</td>
+                        <td>Branching factor (B* tree)</td>
+                        <td>B* tree calculations</td>
+                    </tr>
+                    <tr>
+                        <td>\(HT_i = \lceil \log_{f_i} b_r \rceil\)</td>
+                        <td>B* tree height</td>
+                        <td>Search cost estimation</td>
+                    </tr>
+                </table>
+
+                <h3>Catalog Statistics Formulas</h3>
+                <table>
+                    <tr>
+                        <th>Formula</th>
+                        <th>Description</th>
+                        <th>Notes</th>
+                    </tr>
+                    <tr>
+                        <td>\(V(A,r) = |\pi_A(r)|\)</td>
+                        <td>Number of distinct values</td>
+                        <td>\(= n_r\) if A is key</td>
+                    </tr>
+                    <tr>
+                        <td>\(SC(A,r) = 1\) if key<br>\(SC(A,r) = n_r/V(A,r)\) if not</td>
+                        <td>Selection cardinality</td>
+                        <td>Assumes uniform distribution</td>
+                    </tr>
+                    <tr>
+                        <td>\(n_{avg} = n_r \cdot \frac{v - \min(A,r)}{\max(A,r) - \min(A,r)}\)</td>
+                        <td>Result size for \(A \leq v\)</td>
+                        <td>For comparison selections</td>
+                    </tr>
+                </table>
+
+                <h3>Selection Algorithm Costs</h3>
+                <table>
+                    <tr>
+                        <th>Algorithm</th>
+                        <th>Cost Formula</th>
+                    </tr>
+                    <tr>
+                        <td>A1: Linear</td>
+                        <td>\(b_r\)</td>
+                    </tr>
+                    <tr>
+                        <td>A2: Binary</td>
+                        <td>\(\lceil \log_2 b_r \rceil + \lceil SC(A,r)/f_r \rceil - 1\)</td>
+                    </tr>
+                    <tr>
+                        <td>A3: Primary (key)</td>
+                        <td>\(HT_i + 1\)</td>
+                    </tr>
+                    <tr>
+                        <td>A4: Primary (non-key)</td>
+                        <td>\(HT_i + \lceil SC(A,r)/f_r \rceil\)</td>
+                    </tr>
+                    <tr>
+                        <td>A5: Secondary</td>
+                        <td>\(HT_i + SC(A,r)\) or \(HT_i + 1\) if key</td>
+                    </tr>
+                </table>
+
+                <h3>Join Algorithm Costs</h3>
+                <table>
+                    <tr>
+                        <th>Algorithm</th>
+                        <th>Cost Formula</th>
+                    </tr>
+                    <tr>
+                        <td>Nested Loop</td>
+                        <td>\(n_r \times b_s + b_r\)</td>
+                    </tr>
+                    <tr>
+                        <td>Block Nested</td>
+                        <td>\(b_r \times b_s + b_r\)</td>
+                    </tr>
+                    <tr>
+                        <td>Indexed Nested</td>
+                        <td>\(b_r + n_r \times c\)</td>
+                    </tr>
+                    <tr>
+                        <td>Sorted Merge</td>
+                        <td>\(b_r + b_s + c\)</td>
+                    </tr>
+                    <tr>
+                        <td>Hash Join</td>
+                        <td>\(b_r + b_s\)</td>
+                    </tr>
+                </table>
+
+                <h3>Join Result Size Formulas</h3>
+                <table>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Formula</th>
+                    </tr>
+                    <tr>
+                        <td>No common attributes</td>
+                        <td>\(|r \bowtie s| = n_r \times n_s\)</td>
+                    </tr>
+                    <tr>
+                        <td>Common attr is key in R</td>
+                        <td>\(|r \bowtie s| \leq n_s\)</td>
+                    </tr>
+                    <tr>
+                        <td>General case</td>
+                        <td>\(|r \bowtie s| = \frac{n_r \times n_s}{\max(V(A,r), V(A,s))}\)</td>
+                    </tr>
+                </table>
+
+                <div class="tip-box">
+                    <div class="tip-box-title">💡 Memory Aid: BFSC</div>
+                    <p><strong>B</strong>locking factor → <strong>F</strong>ind blocks → <strong>S</strong>election cardinality → <strong>C</strong>alculate cost</p>
+                    <p>Always follow this order when solving problems!</p>
+                </div>
+
+                <div class="info-box">
+                    <div class="info-box-title">⚠️ Common Formula Mistakes</div>
+                    <ul>
+                        <li>Forgetting \(\lceil\text{ceiling}\rceil\) when calculating number of blocks</li>
+                        <li>Using \(\lceil\text{ceiling}\rceil\) instead of \(\lfloor\text{floor}\rfloor\) for blocking factor</li>
+                        <li>Confusing sparse index \(f_i = b/(p+k)\) vs B* tree \(f_i = (b+k)/(p+k)\)</li>
+                        <li>Not checking if attribute is key before using SC formula</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- AUDIO GUIDE SECTION -->
+        <section id="audio" class="section">
+            <div class="card">
+                <h2>Audio Guide</h2>
+
+                <div class="info-box">
+                    <div class="info-box-title">🎧 Audio Learning Resource</div>
+                    <p>This audio guide covers key database concepts including SQL theory, I/O operations, and ACID properties. Perfect for revision while commuting or as a supplementary learning resource.</p>
+                </div>
+
+                <div class="audio-player-container">
+                    <div class="audio-player-card">
+                        <div class="audio-player-header">
+                            <div class="audio-icon">🎙️</div>
+                            <div class="audio-info">
+                                <h3>Mastering Databases: SQL, Theory, I/O & ACID</h3>
+                                <p class="audio-subtitle">Comprehensive midterm review with subtitles</p>
+                            </div>
+                        </div>
+
+                        <audio controls class="audio-element" id="audioPlayer">
+                            <source src="assets/audio/Mastering_Databases_Midterm_SQL_Theory_IO_ACID_with_subs.m4a" type="audio/mp4">
+                            <track kind="subtitles" src="assets/audio/Transcript.vtt" srclang="en" label="English" default>
+                            Your browser does not support the audio element.
+                        </audio>
+
+                        <div class="subtitle-display" id="subtitleDisplay">
+                            <p class="subtitle-text" id="subtitleText">Subtitles will appear here when playing...</p>
+                        </div>
+
+                        <div class="audio-disclaimer">
+                            <p><strong>Disclaimer:</strong> This audio guide was generated using <a href="https://notebooklm.google/" target="_blank" rel="noopener noreferrer">Google NotebookLM</a>, an AI-powered tool that creates audio content from source materials. While the content has been reviewed for accuracy, please verify important concepts with official course materials.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>What's Covered</h3>
+                <ul>
+                    <li><strong>SQL Fundamentals:</strong> SELECT, JOIN, GROUP BY, subqueries</li>
+                    <li><strong>Database Theory:</strong> Normalization, functional dependencies, keys</li>
+                    <li><strong>I/O Operations:</strong> Block access, indexing strategies, query cost</li>
+                    <li><strong>ACID Properties:</strong> Atomicity, Consistency, Isolation, Durability</li>
+                    <li><strong>Transaction Management:</strong> Concurrency control, locking protocols</li>
+                </ul>
+
+                <div class="hint">
+                    <strong>💡 Tip:</strong> Use this audio guide alongside the written materials. The combination of reading and listening helps reinforce concepts more effectively than either method alone.
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p>BME VITMAB04 - Database Systems | Comprehensive Interactive Cheatsheet</p>
+        <p>Made with ❤️ by Lucian Cojocaru</p>
+    </footer>
+</body>
+</html>

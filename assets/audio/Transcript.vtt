@@ -1,0 +1,1097 @@
+WEBVTT
+
+00:00:00.146 --> 00:00:12.016
+Welcome to the Deep Dive, where we take your pile of sources, whether they are textbook chapters, exhaustive lecture notes, or research papers, and extract the essential, actionable knowledge you need right now.
+
+00:00:12.856 --> 00:00:22.365
+Today's mission is one of pretty high stakes. We are providing a comprehensive survival guide for a demanding database's midterms.
+
+00:00:22.506 --> 00:00:25.149
+And this isn't just about, you know, defining terms?
+
+00:00:25.190 --> 00:00:35.646
+Not at all. It's about synthesizing foundational theory, complex SQL logic, physical storage mechanisms, query efficiency tradeoffs, and the critical world of transaction management.
+
+00:00:35.886 --> 00:00:52.783
+It is a massive stack. We're spanning from the abstract notion of data independence. All the way down to calculating the minimum number of disk blocks required to hold a relation. Yeah. We need to focus on where the deepest conceptual tradeoffs lie and where the trickiest calculation shortcuts are hidden.
+
+00:00:52.982 --> 00:00:53.423
+Exactly.
+
+00:00:53.664 --> 00:01:00.168
+If you walk away understanding the why behind these concepts, you're not just ready to pass the test, you're ready to start building systems.
+
+00:01:00.409 --> 00:01:16.143
+That's the whole point. We need to connect the logical decisions you make as a database designer, say, choosing a primary key, to the physical consequences those choices impose on performance algorithms later. Understanding those relationships is, I think, the key to mastering database systems.
+
+00:01:16.503 --> 00:01:38.468
+Okay, let's jump in and start building that foundation. Okay, let's unpack this. We begin logically where the system manages its immense complexity, the concept of data abstraction. Our sources define three distinct levels of schema managing how we view the data. Let's start with the one most users never see, the physical level.
+
+00:01:38.789 --> 00:01:44.522
+So the physical level is the real nuts and bolts. It describes precisely how the data is physically stored.
+
+00:01:44.682 --> 00:01:46.385
+Like the raw bits on the disk.
+
+00:01:46.545 --> 00:01:46.924
+Pretty much.
+
+00:01:47.045 --> 00:01:47.186
+Yeah.
+
+00:01:47.426 --> 00:01:57.899
+The complex file structures, the exact layout of blocks on the disk where the indices are placed, is highly hardware dependent and, honestly, only relevant to the engineers optimizing the system's deep core.
+
+00:01:58.039 --> 00:02:01.644
+Okay, so above that, we hit the logical level. This is the structural blueprint.
+
+00:02:01.664 --> 00:02:11.769
+This is the critical layer. It's the realm of the database administrator, or BBA. Mm-hmm. The logical level describes what data is stored and, crucially, what relationships exist among that data.
+
+00:02:11.889 --> 00:02:13.010
+But it does it in a simple way.
+
+00:02:13.350 --> 00:02:24.106
+A very simple way. It uses high-level structures, the tables and relationships we all recognize, even if the physical storage underneath is a complete labyrinth of complex structures.
+
+00:02:24.687 --> 00:02:27.752
+And then at the top of the pyramid is the view level.
+
+00:02:27.872 --> 00:02:39.484
+That's the user interface layer. It exists purely to simplify user interactions. A view only describes a part of the entire database tailored to the needs of a specific user or application.
+
+00:02:39.704 --> 00:02:41.665
+So it's about security and simplicity.
+
+00:02:41.746 --> 00:02:45.889
+Exactly. It filters out irrelevant complexity from the full logical schema.
+
+00:02:46.049 --> 00:03:01.181
+Okay. So the relationship between the physical and logical levels introduces one of the most foundational concepts in databases, physical data independence. If a database system is so much better than an old school file processing system, why is this independence the reason?
+
+00:03:01.457 --> 00:03:11.105
+It all comes down to maintenance and integrity. In conventional file processing, the application code is just tightly woven with a physical storage detail.
+
+00:03:11.145 --> 00:03:12.026
+So they're completely coupled.
+
+00:03:12.366 --> 00:03:26.557
+Completely. If you decide to change how your files are stored, say, moving from one type of disk to another or rebuilding an index structure, you have to rewrite and recompile every single application program that accesses that data.
+
+00:03:26.933 --> 00:03:28.415
+That sounds like a maintenance nightmare.
+
+00:03:28.556 --> 00:03:35.544
+It is a nightmare. Physical data independence breaks that link. It allows engineers to completely overhaul the physical storage implementation.
+
+00:03:35.764 --> 00:03:37.687
+Like switching to SSDs or something.
+
+00:03:38.027 --> 00:03:46.639
+Right. They're optimizing indices, rearranging blocks, all without impacting the application programs that are built solely upon that stable logical schema.
+
+00:03:47.058 --> 00:03:47.300
+I see.
+
+00:03:47.879 --> 00:03:57.060
+This separation guarantees system longevity and reduces development overhead. making databases a superior architecture for handling large, dynamic data sets.
+
+00:03:57.580 --> 00:04:04.704
+That distinction is paramount. Let's solidify the difference between the structural definition and the data itself. Schema versus instance.
+
+00:04:04.843 --> 00:04:11.546
+So the database schema is the fixed, logical design. It's the description of the data. Think of it like the class definition and program. It's
+
+00:04:11.646 --> 00:04:12.347
+the blueprint.
+
+00:04:12.766 --> 00:04:26.295
+It's the blueprint. It's constant, unless the DBA actively changes the structure using DDL. The database instance, on the other hand, is the snapshot of the actual data content, the rows and the tables, at a specific moment in time.
+
+00:04:26.415 --> 00:04:27.896
+And the instance is always changing.
+
+00:04:27.995 --> 00:04:32.699
+Constantly, as data is manipulated. But the schema provides the rigid container.
+
+00:04:33.019 --> 00:04:36.841
+And the tools we use to manage these two aspects are DDL and DML.
+
+00:04:37.081 --> 00:04:45.627
+DDL, the data definition language, is for specifying and modifying the database schema. It defines the relation schemas, sets up the integrity constraints.
+
+00:04:45.728 --> 00:04:47.129
+So create table, drop table.
+
+00:04:47.249 --> 00:04:48.670
+Right. It defines the container.
+
+00:04:48.894 --> 00:04:53.459
+And DML, the data manipulation language, is where most application developers live.
+
+00:04:53.579 --> 00:05:04.170
+Yes. DML is for accessing or manipulating the data content itself. And the key philosophical point here is that SQL is a non-procedural DML.
+
+00:05:04.490 --> 00:05:06.314
+What does that mean exactly, non-procedural?
+
+00:05:06.394 --> 00:05:17.713
+It means when you write a query, you specify what data you need. e.g., find all instructors with salary over $90,000, but you explicitly do not specify how the system should go retrieve it.
+
+00:05:17.812 --> 00:05:21.055
+So you're not telling it which index to use or how to scan the table?
+
+00:05:21.435 --> 00:05:30.800
+Not at all. The system handles the entire execution strategy. This is what frees the user from needing physical knowledge and ties back perfectly to physical data independence.
+
+00:05:30.959 --> 00:05:37.595
+Okay, let's define the core components of the relational model. Table, row, column. Let's use the proper term.
+
+00:05:37.654 --> 00:05:43.221
+Okay. We refer to a table as a relation. A row within that table is a tuple.
+
+00:05:43.362 --> 00:05:43.802
+A tuple.
+
+00:05:44.083 --> 00:05:54.495
+A tuple. A column is an attribute. And the current set of tuples in that table at any moment is the relation instance. These terms are non-negotiable for clarity in database discussion.
+
+00:05:54.776 --> 00:06:01.084
+Right. Let's focus intensely on keys, as these are the backbone of data integrity. What defines a super key?
+
+00:06:01.624 --> 00:06:08.872
+A super key is the most encompassing definition. It's any set of one or more attributes that taken together uniquely identify a tuple.
+
+00:06:09.252 --> 00:06:09.754
+Any set.
+
+00:06:09.793 --> 00:06:21.790
+Any set that works. For example, if you have an instructor relation, the ID is a super key. But because the system guarantees uniqueness on the ID, the accommodation ID, name, is also technically a super key.
+
+00:06:22.031 --> 00:06:23.432
+Even though the name is redundant.
+
+00:06:23.492 --> 00:06:26.776
+Right. Even though the name attribute is redundant for identification purposes.
+
+00:06:27.237 --> 00:06:33.225
+So if a super key just needs to guarantee uniqueness, how does that differ from a primary key?
+
+00:06:33.646 --> 00:06:46.658
+The primary key is a chosen super key. It's the one explicitly declared in the schema, and it carries a critical integrity constraint. The system strictly prohibits null values in any attribute designated as part of the primary key.
+
+00:06:46.978 --> 00:06:49.821
+Ah, so no nulls. That's the key difference.
+
+00:06:49.821 --> 00:06:56.605
+That's the key difference. This ensures the primary means of identification is always present and unambiguous.
+
+00:06:56.817 --> 00:07:02.382
+And finally, the foreign key. This is the structural mechanism that enforces relationships between tables, right?
+
+00:07:02.483 --> 00:07:11.831
+It's the essential glue, yes. A foreign key is a set of attributes in one relation whose values must match the primary key values in another reference relation.
+
+00:07:12.293 --> 00:07:14.814
+The source example was course.dep name.
+
+00:07:15.216 --> 00:07:26.206
+A perfect example. It references the department relation. If you try to create a course using a department name that doesn't exist in the department table, the foreign key constraint immediately fails and the operation is rejected.
+
+00:07:26.577 --> 00:07:29.201
+Oh, it maintains what's called referential integrity.
+
+00:07:29.382 --> 00:07:31.345
+Precisely. It maintains referential integrity.
+
+00:07:31.425 --> 00:07:33.187
+Okay, so building the structure is step one.
+
+00:07:33.509 --> 00:07:45.646
+Step two is interacting with it using SQL. And here we need to look closely at the language structure and, crucially, those mechanisms that introduce complexity, like handling sets and nulls.
+
+00:07:46.387 --> 00:07:56.240
+Let's revisit the basic select-from-where structure. We write it one way. But conceptually, the engine evaluates it in a very specific order, starting with the from clause.
+
+00:07:56.279 --> 00:08:01.961
+Correct. The conceptual order is from, which generates the Cartesian product of all listed relations.
+
+00:08:01.961 --> 00:08:02.622
+We'll come back to that.
+
+00:08:02.723 --> 00:08:14.728
+Oh, yes. Then where to apply selection predicates. Then group by to partition the results. Then having to filter those groups. And finally, select to perform the projection and output the attributes.
+
+00:08:15.327 --> 00:08:19.810
+Okay, so that initial Cartesian product step is what leads to our first performance hazard.
+
+00:08:19.810 --> 00:08:21.911
+It is. The Cartesian product danger.
+
+00:08:22.110 --> 00:08:28.735
+You gave a sobering example from the university schema. Why is forgetting a joint condition in the WHERE clause such an immense computational cost?
+
+00:08:28.915 --> 00:08:36.681
+Because if you forget to specify how the table should be related, the joint condition, the system is conceptually forced to generate every possible pairing.
+
+00:08:36.921 --> 00:08:39.482
+Every row from table A with every row from table B.
+
+00:08:39.982 --> 00:08:52.432
+Every single one. If your instructor table has 200 records and your teacher's table has 600 records, the unconstrained result is 200 times 600. which is 120,000 tuples.
+
+00:08:52.812 --> 00:08:54.755
+Wow. And that's with small tables.
+
+00:08:54.956 --> 00:09:02.206
+Tiny tables. If those tables were millions of records, you'd be generating billions of tuples, most of which are just garbage data.
+
+00:09:02.474 --> 00:09:06.394
+So that's a staggering temporary result just from one oversight.
+
+00:09:06.475 --> 00:09:14.035
+It is. And while, you know, real-world optimizers use sophisticated algorithms to avoid physically generating that massive product.
+
+00:09:14.235 --> 00:09:15.456
+They don't actually build it in memory.
+
+00:09:15.557 --> 00:09:26.198
+No, of course not. But the inherent mathematical size of that operation is why join ordering and filtering must be so precise. It really reinforces that every line of SQL has a massive physical consequence.
+
+00:09:26.278 --> 00:09:36.202
+Okay, another SQL nuance. It treats data as multi-sets, meaning it allows duplicates, which is unlike like pure relational algebra. How do the standard set operations manage this?
+
+00:09:36.423 --> 00:09:41.145
+By default, union, intersect, and accept all removed duplicates from the final result.
+
+00:09:41.346 --> 00:09:42.768
+So they give you a clean set?
+
+00:09:42.788 --> 00:09:53.535
+A clean set. If you specifically need to retain duplicate rows, if the exact count or multiplicity matters, you have to use the AL modifier. So union all or intersect all.
+
+00:09:54.035 --> 00:09:58.458
+And how does intersect all calculate the count of duplicates? That's a common point of confusion.
+
+00:09:58.479 --> 00:10:06.106
+It just follows the minimum rule. If you have two relations, R and S... And a specific tuple T appears M times an R and N times an S.
+
+00:10:06.287 --> 00:10:06.486
+Okay.
+
+00:10:06.726 --> 00:10:11.413
+Then T will appear minimum M N times, and the result of R intersect all S.
+
+00:10:11.933 --> 00:10:16.440
+So if four sections of a course were taught one year and two the next, intersect all gives you two.
+
+00:10:16.559 --> 00:10:19.243
+It gives you two. The minimum count. It's that simple.
+
+00:10:19.462 --> 00:10:24.142
+Now let's move to null values. They introduce the concept of three-valued logic.
+
+00:10:24.142 --> 00:10:26.235
+Mm-hmm. A real headache sometimes.
+
+00:10:26.294 --> 00:10:32.259
+We use nulls when a value is unknown or just not applicable. What are the two major computational headaches they cause?
+
+00:10:32.458 --> 00:10:38.283
+The first one is arithmetic. Any arithmetic expression involving a null value results in a null value. Simple.
+
+00:10:38.342 --> 00:10:40.164
+Okay. One plus null is null.
+
+00:10:40.504 --> 00:10:48.370
+Right. The second and more confusing headache is comparisons. A comparison like salary null or one, a one null does not evaluate to true or false.
+
+00:10:48.750 --> 00:10:50.511
+It evaluates to unknown.
+
+00:10:50.673 --> 00:10:52.573
+Exactly. The logical value unknown.
+
+00:10:52.830 --> 00:11:03.038
+And since the where clause requires a predicate to evaluate for a tuple to be selected, anything that evaluates to unknown is automatically rejected, just like false.
+
+00:11:03.859 --> 00:11:13.886
+Precisely. This is why standard comparison predicates are unsafe when dealing with nulls. The only safe way to test for them is with the dedicated predicates is null and is not null.
+
+00:11:14.187 --> 00:11:16.269
+So you can't say where salary is null.
+
+00:11:16.428 --> 00:11:20.133
+You can't. It will fail. You must use where salary is null.
+
+00:11:20.452 --> 00:11:24.572
+How about aggregation? Do we have to worry about nulls throwing off our averages?
+
+00:11:24.712 --> 00:11:33.063
+Thankfully, no. The aggregate functions sum, abg, min, and max, conveniently ignore null values during their calculations. Oh, that's
+
+00:11:33.104 --> 00:11:33.423
+handy.
+
+00:11:33.464 --> 00:11:41.254
+It is. If a department has 10 instructors, but three of them have a null salary, abg's salary will only average the seven non-null salaries.
+
+00:11:41.413 --> 00:11:42.315
+But you have to be careful with
+
+00:11:43.716 --> 00:11:52.144
+counts. You do. Counts all rows. including those with nulls. But salary would only count the seven non-null salary values. A subtle but critical difference.
+
+00:11:52.365 --> 00:11:55.707
+Before we get to nested queries, let's just highlight the coalesce function.
+
+00:11:56.068 --> 00:12:03.696
+Ah, yes. Coalesce is essential for robustness. It takes a list of arguments and just returns the first one that is non-null.
+
+00:12:03.875 --> 00:12:04.897
+So what's a good use case?
+
+00:12:05.878 --> 00:12:17.043
+Well, if you calculate sum credits for a student who hasn't taken any courses, the result will be null. But if you use coalesce sum credits, zero. The query returns zero instead of null.
+
+00:12:17.182 --> 00:12:20.543
+Which is much better if you're feeding that into a program expecting a number.
+
+00:12:20.823 --> 00:12:22.783
+Exactly. It prevents errors downstream.
+
+00:12:23.245 --> 00:12:32.226
+Okay. Let's discuss the advanced power tools. Aggregation with group by and nested subqueries. We have to differentiate where from having.
+
+00:12:32.466 --> 00:12:41.028
+The distinction is based on that conceptual evaluation order we discussed. The where clause filters individual tuples before they are partitioned by group by.
+
+00:12:41.309 --> 00:12:42.090
+Before grouping.
+
+00:12:42.090 --> 00:12:46.495
+Right. The HAVING clause filters groups after the aggregation functions have been calculated.
+
+00:12:46.635 --> 00:12:49.721
+So you can use AVAGY in HAVING, but not in WHERE.
+
+00:12:49.980 --> 00:12:56.169
+A classic error is trying to use an aggregate function in the WHERE clause. It's prohibited because the groups haven't even been formed yet.
+
+00:12:56.269 --> 00:13:02.580
+Here's where it gets really interesting. Nested subqueries in the WHERE clause. This allows for powerful set comparisons.
+
+00:13:02.879 --> 00:13:11.332
+They are critical. They primarily enable set membership testing. like in and not in, and set existence checking with exists and not exists.
+
+00:13:11.373 --> 00:13:15.475
+And they might look complex, but they often translate into very efficient internal forms.
+
+00:13:15.576 --> 00:13:19.619
+Very efficient. They translate into specialized relational algebra operators.
+
+00:13:19.779 --> 00:13:23.022
+Which brings up the two you mentioned, semi-join and anti-join.
+
+00:13:23.501 --> 00:13:32.349
+These are conceptual shortcuts the optimizer uses. A semi-join, written as R-semi-join-S, is essentially the internal mechanism for an exists query.
+
+00:13:32.869 --> 00:13:33.789
+So what does it do?
+
+00:13:34.142 --> 00:13:40.566
+It outputs all tuples in R that have at least one match in S. It doesn't combine the data. It just acts as a filter on R.
+
+00:13:40.826 --> 00:13:42.988
+And the anti-joint is for not exists.
+
+00:13:43.107 --> 00:13:53.674
+Right. An anti-joint outputs all tuples in R that have no match in S. Understanding these shows you how the optimizer achieves efficiency without performing a full, massive, cross-product join.
+
+00:13:54.015 --> 00:13:59.820
+We also use subqueries in the from clause, treating the result as a temporary named relation. When is that useful?
+
+00:14:00.000 --> 00:14:03.261
+It's particularly useful when you need to filter the result of an aggregation.
+
+00:14:03.538 --> 00:14:09.586
+Like the example, find the average salary of departments whose average salary is greater than $42,000.
+
+00:14:09.586 --> 00:14:18.176
+Perfect example. You can't just stick that in a having clause easily. By placing the average salary calculation into the from clause, you create a virtual table.
+
+00:14:18.736 --> 00:14:20.399
+With a column for average salary.
+
+00:14:20.599 --> 00:14:29.309
+Exactly. And then you can apply a simple where clause to that virtual table. It breaks the problem into clear sequential steps, much cleaner.
+
+00:14:29.546 --> 00:14:37.594
+Let's dedicate some time now to applying this to the complex SQL exercises from the source material. These are the synthesis problems that really test mastery.
+
+00:14:37.854 --> 00:14:39.855
+Agreed. Let's bring the logic precisely.
+
+00:14:40.155 --> 00:14:45.321
+Problem one, find the enrollment of each section offered in fall 2017.
+
+00:14:45.321 --> 00:14:51.506
+Okay, this is a straightforward aggregation, but it needs a join. First, you have to join the takes relation with the section relation.
+
+00:14:51.886 --> 00:14:54.635
+Takes has the student enrollment, section has the semester info.
+
+00:14:54.635 --> 00:15:10.269
+Right. Then you filter with a where clause, semester, fall, and year, it's 2017. Then you group. You group the results by the primary key of the section course ID, section ID semester year, and finally you aggregate using count to find the number of students in each group.
+
+00:15:10.788 --> 00:15:16.030
+Simple structure, but it combines join, filter, and group. Crucial synthesis.
+
+00:15:16.370 --> 00:15:18.812
+Exactly. Now let's scale up the complexity.
+
+00:15:19.072 --> 00:15:27.961
+Problem two. Find sections with maximum enrollment. This requires finding all enrollments first and then finding the maximum of those enrollments.
+
+00:15:28.102 --> 00:15:37.038
+This needs a two-step logic. It's often solved with a nested query or, for clarity, a with clause, which is also called a common table expression.
+
+00:15:37.359 --> 00:15:38.488
+Let's walk through the steps.
+
+00:15:38.488 --> 00:15:46.167
+Step A. The inner query calculates the enrollment for all sections using the logic from the first problem. Let's call this result set section enrollment.
+
+00:15:46.206 --> 00:15:50.009
+Okay, so you have a temporary table with sections and their enrollment counts.
+
+00:15:50.110 --> 00:15:56.835
+Right. Then step B, the outer query, just finds the sections from section enrollment where the enrollment count is equal to the overall maximum.
+
+00:15:57.014 --> 00:15:58.557
+And how do you find that maximum?
+
+00:15:58.557 --> 00:16:05.662
+The easiest way is to nest another subquery where enrollment count select max enrollment count from section enrollment.
+
+00:16:05.878 --> 00:16:12.100
+that pattern calculated metric for everyone, then filter for those equal to the max of that metric is a classic.
+
+00:16:12.519 --> 00:16:16.501
+It is. Now for the negation problems which require the most careful thought.
+
+00:16:16.721 --> 00:16:21.803
+Problem three. Find the ID and name of each instructor who was never given an A grade.
+
+00:16:22.443 --> 00:16:30.433
+This is the textbook double negation. The simplest way to think about it is all instructors Minus the instructors who have given an A grade.
+
+00:16:30.474 --> 00:16:35.041
+So we could solve it with the except tie operator, which matches that set difference logic.
+
+00:16:35.140 --> 00:16:39.227
+Exactly. First, you select all IDs and names in the instructor relation. That's your universe.
+
+00:16:39.268 --> 00:16:39.648
+Set R.
+
+00:16:39.849 --> 00:16:50.359
+Then you create T. Set S, the exclusions. You select the IDs and names of instructors who have given an A. This requires joining instructor, teaches and takes, and filtering takes dot grade A.
+
+00:16:50.820 --> 00:16:53.481
+And the final result is R except S.
+
+00:16:53.602 --> 00:16:57.186
+Correct. It provides the results set directly and the logic is very clear.
+
+00:16:57.405 --> 00:17:02.230
+Okay, and now the common but often trickier implementation using not exists.
+
+00:17:02.490 --> 00:17:07.916
+Not exists is very performant, but the logic requires you to flip the condition inside the subquery.
+
+00:17:08.297 --> 00:17:09.117
+So how does that work?
+
+00:17:09.278 --> 00:17:15.825
+Your outer query is select ID, name from instructor I, and your filter is where not exists, subquery.
+
+00:17:16.085 --> 00:17:18.366
+And the subquery is the existence check.
+
+00:17:18.907 --> 00:17:33.182
+Right. The subquery has to search for an A grade given by that specific instructor I. So you join teaches and takes and correlate them back to the outer instructor I using IID, teaches.id, and then you filter for takes.grade.
+
+00:17:33.990 --> 00:17:38.057
+So if the subquery finds even one A grade for that instructor...
+
+00:17:38.377 --> 00:17:47.253
+Then exists is true, so not exists is false, and that instructor is excluded. If the subquery is empty, not exists is true, and the instructor is included.
+
+00:17:47.478 --> 00:17:56.344
+That's a crucial pattern for the midterm. Okay, final complexity layer, problem four. Rewrite that query, but only include instructors who have given at least one other non-null grade.
+
+00:17:56.484 --> 00:17:59.727
+Okay, so now we're looking for active graders who just happen to have never given an A.
+
+00:18:00.106 --> 00:18:01.208
+Two separate conditions.
+
+00:18:01.208 --> 00:18:20.817
+Two separate existence checks that must both be satisfied. The first condition is the not exist logic we just perfected to ensure no A grade exists. And the second condition is an inclusion check. We have to add an Andy exists clause. This subquery needs to check for the existence of any grade that is not null and is not A.
+
+00:18:21.616 --> 00:18:25.098
+So it's basically the same subquery structure, just with a different filter.
+
+00:18:25.219 --> 00:18:38.365
+Precisely. You join teaches and takes, linked to instructor I, and the filter becomes where takes dot grade is not null and D takes dot grade A. The final result is the set of instructors who satisfied both conditions.
+
+00:18:38.538 --> 00:18:49.872
+That covers the logic we write, but let's remember the physical cost behind every line of that code. We're transitioning now from the elegant, abstract world of SQL to the gritty reality of physical disk blocks and I.O. costs.
+
+00:18:49.932 --> 00:18:51.473
+Yep, where the rubber meets the road.
+
+00:18:51.574 --> 00:19:00.845
+When we talk about performance in traditional database systems, we are talking about I.O. costs, the time it takes to move data from slow disk to fast memory. We have a calculation problem to set the scale.
+
+00:19:01.005 --> 00:19:08.413
+This exercise is all about establishing our baseline for performance, calculating the minimum number of disk blocks required for a large relation.
+
+00:19:08.534 --> 00:19:14.102
+The constraints are 3 million records, 300 bytes per record, and a block size of 4,000 bytes.
+
+00:19:14.541 --> 00:19:22.512
+Okay, first, the total data size. 3 million records times 300 bytes per record gives us 900 million bytes.
+
+00:19:22.933 --> 00:19:25.416
+So 900 megabytes of raw data.
+
+00:19:25.617 --> 00:19:36.099
+Yep. Next, the theoretical minimum number of blocks... is that total data size divided by the block size. So 900 million bytes divided by 4,000 bytes per block.
+
+00:19:36.339 --> 00:19:38.261
+Is 225,000 blocks.
+
+00:19:38.261 --> 00:19:43.266
+225,000 blocks. That is the IO cost of a linear search. That's our baseline.
+
+00:19:43.405 --> 00:19:49.510
+And it dictates the scale of the problem. If we can't beat that number significantly, our strategy has failed.
+
+00:19:49.590 --> 00:19:50.290
+Utterly failed.
+
+00:19:50.811 --> 00:20:03.664
+Speaking of strategies, let's tackle the storage structure choice problem. We can use either an ordered index structure or a hash algorithm. The crucial constraint is that interval lookups will sometimes be performed. Which do we choose?
+
+00:20:04.005 --> 00:20:11.215
+We absolutely must choose the ordered index structure. The constraint of supporting interval or range lookups immediately invalidates hashing.
+
+00:20:11.455 --> 00:20:11.957
+Why is that?
+
+00:20:12.116 --> 00:20:19.467
+Hash algorithms are designed to scatter data across buckets. They are brilliant for instantaneous equality lookups, like where key equals
+
+00:20:19.527 --> 00:20:21.309
+value. But not for ranges.
+
+00:20:21.513 --> 00:20:35.405
+Not at all. They provide no mechanism to efficiently scan contiguous data for a range query, like where key is between A and B. Ordered indices are the only solution that supports both single-key retrieval and range scanning efficiently.
+
+00:20:35.905 --> 00:20:41.651
+Let's quickly review the basic types of file organization that physically structure the data records themselves.
+
+00:20:41.932 --> 00:20:49.152
+Okay. First is heat file organization. Records are just placed wherever space is found. No logical or physical ordering.
+
+00:20:49.432 --> 00:20:51.553
+Simple but slow without an index.
+
+00:20:51.813 --> 00:20:59.836
+Very slow. Then you have sequential file organization where records are sorted based on a search key. Excellent for reading the entire file or range scans.
+
+00:21:00.277 --> 00:21:01.557
+But inserts are tricky.
+
+00:21:01.576 --> 00:21:07.898
+Yeah, inserts can fragment the file. Then there's multi-table clustering, which is an important optimization for joins.
+
+00:21:08.019 --> 00:21:08.719
+How does that work?
+
+00:21:08.960 --> 00:21:16.768
+It physically stores records from different related tables, like an instructor record and all its department records close together on the same disk blocks.
+
+00:21:17.008 --> 00:21:19.471
+Which would make joining them incredibly fast.
+
+00:21:19.631 --> 00:21:26.077
+Dramatically reduces I.O. Finally, there's table partitioning. This means splitting a very large table, usually by date.
+
+00:21:26.377 --> 00:21:29.662
+Like transactions 2020, transactions 2021.
+
+00:21:29.874 --> 00:21:43.151
+Exactly. This allows the query optimizer to target specific partitions, avoiding scanning irrelevant data, unless you manage storage differently, like keeping new data on fast SSDs and old data on cheaper disks.
+
+00:21:43.751 --> 00:21:49.605
+Before indices, let's quickly confirm where all the information about this physical organization is stored. The data dictionary.
+
+00:21:49.806 --> 00:21:55.107
+Yes, the data dictionary or system catalog. This is the repository of metadata, the data about data.
+
+00:21:55.208 --> 00:21:58.188
+So it knows the names of all the tables, attributes. All of
+
+00:21:58.228 --> 00:22:08.810
+it. Data types, primary and foreign keys, names of indices, index types. And the key nugget here is that most systems store this metadata using database relations themselves.
+
+00:22:09.271 --> 00:22:11.872
+So the system can query itself to figure out its own structure.
+
+00:22:12.051 --> 00:22:16.894
+Exactly. It uses its own fast query engine to look up its internal structure. It's quite elegant.
+
+00:22:16.973 --> 00:22:23.345
+Okay, index terminology. Let's focus on the distinction that impacts I.O. the most, clustering versus secondary index.
+
+00:22:23.664 --> 00:22:29.108
+A clustering index is one where the physical sort order of the data file is defined by the search key in the index.
+
+00:22:29.308 --> 00:22:31.290
+So the index order and the data order are the same.
+
+00:22:31.510 --> 00:22:43.819
+They are the same. Because of this, when you find a location, all subsequent records are physically adjacent. Sequential access and range scans are extremely fast. It minimizes random I.O.
+
+00:22:44.240 --> 00:22:46.781
+And a secondary index doesn't match the sort.
+
+00:22:47.830 --> 00:23:00.446
+Correct. It is built on an attribute that does not determine the physical layout. It speeds up lookups, for sure, but retrieving multiple records via a secondary index often leads to costly random I.O.
+
+00:23:00.846 --> 00:23:02.829
+Because the pointers are just leading you all over the desk.
+
+00:23:02.849 --> 00:23:04.371
+You're jumping all over the place, exactly.
+
+00:23:04.531 --> 00:23:05.973
+Next, dense versus sparse.
+
+00:23:06.574 --> 00:23:17.653
+Think of a library catalog. A dense index is like having an index card for every single book in the library. It guarantees fast lookup because every search key is represented, but it takes up a lot of space.
+
+00:23:17.873 --> 00:23:18.953
+And a sparse index.
+
+00:23:19.193 --> 00:23:29.520
+A sparse index only has an entry for some search key values, say one card for every hundredth book. It saves space, but it requires the underlying data file to be ordered on that key.
+
+00:23:29.861 --> 00:23:31.762
+So it gets you to the right area, then you have to scan.
+
+00:23:32.042 --> 00:23:36.445
+Right. It directs you to the starting block, and then you do some sequential scanning to find the exact record.
+
+00:23:36.786 --> 00:23:42.269
+The index structure that balances all these needs is the B plus tax tree. Why is it the standard?
+
+00:23:42.645 --> 00:23:53.817
+B plus TAC trees solve the key problem of older index structures, which lost efficiency as you inserted and deleted records. The B plus TAC tree is a balanced tree structure.
+
+00:23:54.198 --> 00:23:55.579
+And the key nugget there is that.
+
+00:23:56.961 --> 00:24:04.670
+All paths from the root to any leaf have the same length. This guarantees logarithmic search time, no matter how much the data changes.
+
+00:24:05.190 --> 00:24:08.554
+And structurally, how does it optimize searching and range queries?
+
+00:24:08.794 --> 00:24:19.858
+The non-leaf nodes are just indices guiding the search down the tree. The actual data pointers are all in the leaf nodes. And here's the clever part. The leaf nodes are linked sequentially, like a linked list.
+
+00:24:19.999 --> 00:24:22.903
+Ah, so once you find the start of your range, you can just follow the chain.
+
+00:24:23.042 --> 00:24:27.428
+Exactly. You just scan along the leaf nodes. It makes range lookups extremely fast.
+
+00:24:27.647 --> 00:24:37.098
+So we've established the physical cost and the index structures. Now we can discuss the magic performed by the query optimizer, turning that select statement into the lowest cost path for retrieving the data.
+
+00:24:37.339 --> 00:24:39.261
+Right. This is where the system gets really smart.
+
+00:24:39.465 --> 00:24:51.433
+Our cost model, again, is dominated by I.O. We have that baseline of 225,000 blocks. How do indices drastically reduce that? Let's compare two algorithms for range queries, A3 and A6.
+
+00:24:52.213 --> 00:24:57.257
+Okay, A3 uses a clustering index for a comparison, like salary 70,000.
+
+00:24:57.257 --> 00:24:59.798
+So the data is physically sorted by salary.
+
+00:24:59.838 --> 00:25:12.550
+Right. A3 is highly efficient. The index quickly finds a block with the first matching tuple. Then, because the data is physically sorted, the system just does a fast sequential scan reading contiguous blocks until the condition is no longer met.
+
+00:25:12.810 --> 00:25:13.392
+Minimal I.O.
+
+00:25:13.612 --> 00:25:18.115
+Minimal I.O. Now, compare that to A6 using a secondary index for the same condition.
+
+00:25:18.375 --> 00:25:20.036
+So the data is not sorted by salary.
+
+00:25:20.336 --> 00:25:31.903
+Right, and this is the high-cost scenario. The secondary index returns a list of pointers to all matching records. Since the physical layout doesn't match, these records are almost certainly scattered randomly across those 225,000 blocks.
+
+00:25:32.003 --> 00:25:34.685
+So you're doing a random disc read for almost every record.
+
+00:25:34.930 --> 00:25:49.269
+a time-consuming random IO for nearly every single record. If your query returns, say, 20% of the table, the cost of these random IOs can easily be more than the cost of just doing a full linear scan in the first place.
+
+00:25:49.388 --> 00:25:50.950
+Making the index counterproductive.
+
+00:25:51.009 --> 00:25:58.734
+Exactly. It's the crucial tradeoff. Yeah. Secondary indices are great for unique lookups, but terrible for high selectivity range queries.
+
+00:25:58.974 --> 00:26:05.259
+That is an incredibly important distinction. Okay, let's move to joins. We have four major strategies to compare.
+
+00:26:05.539 --> 00:26:10.203
+First is the nested loop join. Simple, but costly. It iterates tipple by tuple.
+
+00:26:10.384 --> 00:26:13.846
+So for every row in the outer table, scan the entire inner table.
+
+00:26:13.887 --> 00:26:19.053
+Yes. If the buffer is minimal, the cost is enormous. Then you have the block-nested loop join.
+
+00:26:19.153 --> 00:26:20.253
+Which is an optimization.
+
+00:26:20.434 --> 00:26:31.165
+A crucial one. Instead of iterating over single tuples, the outer loop iterates over blocks of the outer relation. It reads a big chunk into memory and then scans the inner relation just once for that whole chunk.
+
+00:26:31.346 --> 00:26:34.549
+Which reduces the number of scans of the inner table dramatically.
+
+00:26:34.930 --> 00:26:50.279
+Vastly. Next is the index-nested loop join. This requires an index on the join attribute of the inner relation. It reads the outer relation once, and for every tuple, it does a fast index lookup on the inner one. Very effective if the outer table is small.
+
+00:26:50.619 --> 00:26:52.682
+And finally, sort merge join.
+
+00:26:53.122 --> 00:27:02.287
+This has two phases. First, you sort both relations on the join attribute. Second, you do a merge scan. If the relations are already sorted, maybe because of a clustering index.
+
+00:27:02.446 --> 00:27:05.268
+The merge part is super efficient, just a linear scan.
+
+00:27:05.367 --> 00:27:08.190
+Exactly. It's often preferred if you need the result to be ordered anyway.
+
+00:27:08.362 --> 00:27:11.924
+And then we have the hash join, often called the fastest if you have enough memory.
+
+00:27:12.065 --> 00:27:21.631
+The hash join is highly efficient. It also has two phases. First is partitioning. Both relations are partitioned into buckets using a shared hash function on the join attribute.
+
+00:27:21.830 --> 00:27:24.792
+So all matching values end up in corresponding buckets.
+
+00:27:24.953 --> 00:27:32.459
+Right. Then there's the joining phase. For each pair of buckets, you load the smaller one into memory to build a hash table, and then you probe it with the larger one.
+
+00:27:32.798 --> 00:27:37.021
+You stated the optimal cost as three times the sum of the block counts.
+
+00:27:37.405 --> 00:27:38.287
+Why the factor of
+
+00:27:38.366 --> 00:27:38.627
+three?
+
+00:27:39.048 --> 00:27:53.346
+That three represents three major IO steps, assuming we don't have enough memory for everything. Step one is reading both relations from disk. Step two is writing all the new partitions back to disk. Step three is reading those partitions back in during the join phase.
+
+00:27:53.386 --> 00:27:54.488
+So read, write, read.
+
+00:27:54.949 --> 00:28:01.413
+Read, write, read. The cost is linear and very predictable. which makes it a favorite algorithm for optimizers.
+
+00:28:01.573 --> 00:28:12.144
+Once the optimizer chooses the best sequence of operations, the operator tree, it still has to decide how to execute them. This brings us to materialization versus pipelining.
+
+00:28:12.565 --> 00:28:21.575
+Materialization is the simple way. You compute the result of one operation, write the entire result to a temporary file on disk, and then use that file as input for the next operation.
+
+00:28:21.836 --> 00:28:23.837
+But that sounds like a lot of I.O.
+
+00:28:24.049 --> 00:28:32.333
+It is. It's necessary if the intermediate result is too big for memory, but it's costly. Pipelining is the superior memory-centric approach.
+
+00:28:32.473 --> 00:28:33.153
+How does that work?
+
+00:28:33.294 --> 00:28:40.856
+Pipelining avoids writing intermediate results to disk entirely. It just passes tuples directly from one operation to the next through memory buffers.
+
+00:28:40.957 --> 00:28:42.518
+Which saves a ton of IO cost.
+
+00:28:42.778 --> 00:28:52.862
+A ton. You could have a demand-driven approach, where the consumer pulls data as needed, or a producer-driven approach, where the producer pushes data aggressively to maximize CPU utilization.
+
+00:28:53.286 --> 00:29:02.397
+The genius of the optimizer lies in transforming the initial query plan into a cheaper one using relational algebra equivalence rules. What are the key rules for cost reduction?
+
+00:29:02.798 --> 00:29:07.564
+The ultimate goal is to shrink intermediate results as much as possible, as early as possible.
+
+00:29:07.604 --> 00:29:08.305
+Okay, rule number one.
+
+00:29:08.724 --> 00:29:19.578
+Selection pushdown. This rule says that selection predicates your where clauses should be applied immediately after a relation is accessed, even before joins. Filter out the junk early.
+
+00:29:19.798 --> 00:29:20.861
+Makes sense. Next.
+
+00:29:20.861 --> 00:29:30.435
+Projection pushdown. Similarly, removing unnecessary attributes should happen early to reduce the tuple size. Smaller tuples mean more fit into a block, which reduces IO.
+
+00:29:30.655 --> 00:29:31.676
+And the most important one.
+
+00:29:31.876 --> 00:29:46.008
+Join ordering. This is the most critical. The cost of joining A to B and then to C can be vastly different from joining B to C and then to A. The optimizer has to use cost statistics to figure out the join order that minimizes the size of the temporary results.
+
+00:29:46.209 --> 00:29:47.288
+And how does it estimate
+
+00:29:47.288 --> 00:29:58.355
+those costs? It relies on the stored statistics in the system, catalog number of tuples, number of distinct values for attributes. But for complex predicates, simple counts aren't enough.
+
+00:29:59.115 --> 00:30:00.656
+Which is why they use histograms.
+
+00:30:00.977 --> 00:30:15.365
+Right. Most modern optimizers rely on histograms. A histogram provides a view of the value distribution, like how many salaries fall between $50,000 and $60,000. This allows the optimizer to derive far more accurate selectivity estimates.
+
+00:30:15.684 --> 00:30:16.586
+Okay, we've covered
+
+00:30:16.586 --> 00:30:17.086
+speed.
+
+00:30:17.246 --> 00:30:28.655
+Now we need to shift to fundamental stability. Databases have to guarantee correctness and survival. This is the world of transactions defined by the AC Day properties.
+
+00:30:28.796 --> 00:30:30.436
+Yep, the foundation of reliability.
+
+00:30:30.457 --> 00:30:31.718
+Let's drill down on each of the four.
+
+00:30:31.878 --> 00:30:39.105
+Okay. Atomicity is the all or nothing principle. A transaction must execute completely or none of its effects are reflected.
+
+00:30:39.184 --> 00:30:40.465
+The bank transfer example.
+
+00:30:40.506 --> 00:30:51.789
+The classic example. This is handled by the recovery manager using the log. Then there's consistency. The transaction has to preserve all the defined integrity constraints, ensuring the database moves from one valid state to another.
+
+00:30:51.869 --> 00:30:52.790
+Okay, isolation.
+
+00:30:53.030 --> 00:31:04.118
+The effect of concurrent execution has to be the same as if the transactions were executed serially, one after the other. This avoids all sorts of confusing and incorrect intermediate results.
+
+00:31:04.278 --> 00:31:05.619
+And finally, durability.
+
+00:31:06.119 --> 00:31:12.084
+Once a transaction successfully commits, its changes are permanent and must survive any subsequent system failure.
+
+00:31:12.483 --> 00:31:14.425
+Isolation is the goal of concurrent
+
+00:31:14.425 --> 00:31:15.006
+control.
+
+00:31:15.465 --> 00:31:17.667
+The gold standard is serializability.
+
+00:31:17.907 --> 00:31:27.916
+Correct. A schedule is conflict serializable if it's conflict equivalent to some serial schedule. If you achieve that, you've guaranteed your concurrent execution is logically correct.
+
+00:31:28.217 --> 00:31:34.823
+But ensuring strict serializability gets complicated when we introduce the phantom phenomenon. What exactly is a phantom?
+
+00:31:35.143 --> 00:31:42.746
+Phantoms occur when simple row locking fails. Imagine transaction A reads all instructors with salaries over $90,000.
+
+00:31:42.746 --> 00:31:42.965
+Okay.
+
+00:31:43.506 --> 00:31:55.376
+Before A commits, transaction B inserts a new instructor with a $100,000 salary. When transaction A tries to rerun its read, the information it relied on has changed. A phantom row has appeared.
+
+00:31:55.717 --> 00:31:59.921
+So the conflict isn't on a row that was locked. It's on a row that didn't exist yet.
+
+00:32:00.300 --> 00:32:11.296
+Exactly. The conflict is on the predicate, the where clause itself, the set of criteria. This means the locking mechanism has to protect the definition of the data set, not just the data within it.
+
+00:32:11.496 --> 00:32:12.176
+Which is much harder.
+
+00:32:12.336 --> 00:32:15.359
+Much harder. It requires more sophisticated locking like on the index structures.
+
+00:32:15.680 --> 00:32:25.871
+The primary mechanism for isolation is two-phase locking, or 2PL. We have shared locks for reading and exclusive locks for writing. How does 2PL guarantee serializability?
+
+00:32:26.531 --> 00:32:37.101
+2PL is a structural discipline. It divides a transaction's life into two phases. First, the growing phase, where the transaction can acquire any new locks it needs, but it can't release any.
+
+00:32:37.441 --> 00:32:38.461
+Okay, only acquiring.
+
+00:32:38.722 --> 00:32:48.490
+Then, the shrinking phase. The transaction can release its held locks, but it cannot acquire any new ones. The moment it releases its first lock, its growing phase is over forever.
+
+00:32:48.770 --> 00:32:50.291
+And just by following that simple rule?
+
+00:32:50.432 --> 00:32:55.276
+By adhering to that, 2PL ensures that every schedule generator will be conflict serializable.
+
+00:32:55.395 --> 00:32:56.396
+But that safety comes
+
+00:32:56.436 --> 00:32:57.278
+at a price.
+
+00:32:57.781 --> 00:32:59.222
+the possibility of deadlock.
+
+00:32:59.603 --> 00:33:07.230
+The unavoidable consequence. It happens when two or more transactions are in a mutual wait state, each holding a lock the other one needs.
+
+00:33:07.289 --> 00:33:09.030
+And we detect this with the wait for graph.
+
+00:33:09.332 --> 00:33:18.999
+Exactly. An edge from TI to TJ means TI is waiting for TJ. A deadlock exists if and only if that graph contains a cycle.
+
+00:33:19.119 --> 00:33:20.780
+So how do systems handle this?
+
+00:33:21.121 --> 00:33:28.487
+They either use deadlock detection periodically, checking for cycles and then aborting one transaction to break it, Or they use deadlock prevention.
+
+00:33:28.646 --> 00:33:30.188
+Like weight die or wound weight.
+
+00:33:30.307 --> 00:33:37.292
+Right. Those schemes use transaction timestamps to impose strict rules that prevent cycles from ever forming in the first place.
+
+00:33:37.593 --> 00:33:43.356
+Our final topic addresses atomicity and durability through crash recovery, which relies completely on the log.
+
+00:33:43.576 --> 00:33:47.240
+The log is the historical record, the single source of truth for recovery.
+
+00:33:47.400 --> 00:33:53.963
+And for every write operation, it records the transaction ID, the data item ID, and both the old value and the new value.
+
+00:33:54.625 --> 00:33:55.265
+Both are critical.
+
+00:33:55.265 --> 00:33:56.445
+Why are both necessary?
+
+00:33:56.630 --> 00:34:15.219
+because they serve the two core recovery actions. Undo uses the old value to roll back the changes of an aborted transaction, preserving atomicity. Redo uses the new value to reapply changes of a committed transaction that might not have made it to disk before a crash, preserving durability.
+
+00:34:15.778 --> 00:34:19.981
+And the essential protocol that governs all this is write-ahead logging or wall?
+
+00:34:20.340 --> 00:34:29.876
+Wall is non-negotiable. It mandates that a log record describing a change must be written to stable log storage before the actual data page is modified on the disk.
+
+00:34:30.096 --> 00:34:32.237
+You have to log the intention before you do the action.
+
+00:34:32.277 --> 00:34:40.943
+Precisely. If you didn't, and a crash happened after the data was written but before the log was, the system would have no record of the change. It couldn't guarantee anything.
+
+00:34:41.204 --> 00:34:47.507
+Finally, let's touch on the ARIES recovery scheme and its key idea of repeating history. That sounds counterintuitive.
+
+00:34:47.708 --> 00:34:55.606
+It does, but it simplifies the logic. During the redo phase of Ares, the system intentionally reapplies all actions in the log since the last checkpoint.
+
+00:34:55.686 --> 00:34:57.228
+Even for transactions that failed?
+
+00:34:57.527 --> 00:35:15.264
+Even for those. By repeating history, the system efficiently restores the state of the database to exactly what it was at the moment of the crash. Once that state is achieved, the undo phase can then reliably roll back only the incomplete transactions. It's a very structured and robust approach.
+
+00:35:16.045 --> 00:35:16.405
+So what
+
+00:35:16.425 --> 00:35:17.405
+does this all mean?
+
+00:35:17.557 --> 00:35:25.380
+We've traveled from the high-level philosophy of abstraction down to calculating disc reads and implementing complex concurrency controls.
+
+00:35:25.681 --> 00:35:32.402
+I think the mastery of this material really lies in recognizing the tradeoffs. Databases are systems of compromise.
+
+00:35:32.422 --> 00:35:33.923
+There's no single best answer.
+
+00:35:34.123 --> 00:35:47.079
+Never. You have to understand that choosing a B-plus tree means sacrificing some space efficiency for update efficiency. You must realize that opting for the safety of two-phase locking means you introduce the risk of deadlock that has to be managed.
+
+00:35:47.181 --> 00:35:51.105
+The query optimizer exists purely to navigate those cost-benefit choices.
+
+00:35:51.224 --> 00:35:58.793
+Exactly. And understanding that interconnected network of compromises is what makes you an informed system designer, not just someone who can pass a test.
+
+00:35:58.913 --> 00:36:02.315
+Right. It's about being ready to tackle real-world application problems.
+
+00:36:02.677 --> 00:36:15.003
+And let's end with a look toward the future. We emphasize the traditional cost model centered on I.O., But as high-speed SSDs and main memory databases become the norm, the data is increasingly memory resident.
+
+00:36:15.342 --> 00:36:17.403
+So Iocost shrinks drastically.
+
+00:36:17.563 --> 00:36:28.271
+It basically disappears. This raises a critical question for modern data management. If disk access is no longer the bottleneck, what becomes the new primary focus for query optimization?
+
+00:36:28.512 --> 00:36:31.914
+If the disk is fast enough, the CPU must be the constraint.
+
+00:36:32.135 --> 00:36:50.614
+Precisely. The focus shifts entirely to CPU cycles and memory access latency. Optimization techniques evolved to emphasize things like cache-conscious algorithms and query compilation turning the query plan into native CPU code. The whole game becomes about minimizing instruction overhead and keeping data local to the processor cache.
+
+00:36:50.675 --> 00:36:54.557
+So we move from minimizing disk reads to minimizing CPU cycles.
+

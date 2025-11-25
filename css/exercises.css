@@ -1,0 +1,213 @@
+/* ===========================
+   EXERCISES STYLES
+   =========================== */
+
+.exercise {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+    border: 2px solid var(--primary-light);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .exercise {
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+    }
+}
+
+.exercise-header {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.exercise-question {
+    margin-bottom: 1rem;
+    line-height: 1.8;
+}
+
+/* Compact schedule tables in exercises */
+.exercise table,
+.solution table {
+    width: auto;
+    min-width: 200px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.exercise table th,
+.exercise table td,
+.solution table th,
+.solution table td {
+    padding: 0.5rem 1rem;
+    text-align: center;
+}
+
+.exercise table th:first-child,
+.exercise table td:first-child,
+.solution table th:first-child,
+.solution table td:first-child {
+    text-align: left;
+}
+
+/* Exercise table of contents */
+.exercise-toc {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.exercise-toc h4 {
+    margin-bottom: 1rem;
+    color: var(--primary);
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.exercise-toc ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.exercise-toc li {
+    margin: 0.3rem 0;
+}
+
+.exercise-toc a {
+    color: var(--text);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.exercise-toc a:hover {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+.exercise-toc .toc-section {
+    font-weight: 700;
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    color: var(--text);
+}
+
+.exercise-toc .toc-section:first-child {
+    margin-top: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .exercise-toc .toc-section {
+        color: #ffffff;
+    }
+
+    .exercise-toc a {
+        color: #d4d4d4;
+    }
+
+    .exercise-toc h4 {
+        color: var(--primary-light);
+    }
+}
+
+/* Solutions */
+.solution {
+    background: var(--bg-card);
+    border-radius: 6px;
+    padding: 1rem;
+    margin-top: 1rem;
+    display: none;
+    border: 1px solid var(--border);
+}
+
+.solution.show {
+    display: block;
+    animation: slideDown 0.3s;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Solution toggle button */
+.toggle-solution-btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    background: var(--primary);
+    color: white;
+    margin-top: 1rem;
+}
+
+.toggle-solution-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px var(--shadow);
+}
+
+.toggle-solution-btn.active {
+    background: var(--secondary);
+}
+
+/* Collapsible sections */
+.collapsible {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 1rem 0;
+    overflow: hidden;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.collapsible-header {
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    user-select: none;
+    transition: background 0.2s;
+}
+
+.collapsible-header:hover {
+    background: var(--bg-card);
+}
+
+.collapsible-header::after {
+    content: '▼';
+    transition: transform 0.3s;
+    font-size: 0.8rem;
+}
+
+.collapsible.open .collapsible-header::after {
+    transform: rotate(-180deg);
+}
+
+.collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding: 0 1.5rem;
+}
+
+.collapsible.open .collapsible-content {
+    padding: 1rem 1.5rem;
+    max-height: 5000px;
+}

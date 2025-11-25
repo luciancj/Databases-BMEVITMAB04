@@ -1,0 +1,197 @@
+/* ===========================
+   NAVIGATION STYLES
+   Desktop: Sidebar | Mobile: Full-screen menu
+   =========================== */
+
+/* Desktop: Side navigation panel */
+.nav {
+    background: var(--bg-card);
+    border-right: 2px solid var(--border);
+    position: fixed;
+    top: 52px;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    z-index: 98;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Navigation overlay (mobile only) */
+.nav-overlay {
+    display: none;
+}
+
+.nav-content {
+    padding: 1.5rem 0;
+}
+
+.nav-header {
+    padding: 0 1.5rem 1rem;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.nav-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Close button for mobile menu */
+.menu-close-btn {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--text);
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.menu-close-btn:hover {
+    color: var(--primary);
+    transform: rotate(90deg);
+}
+
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.nav-btn {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background: none;
+    border: none;
+    border-left: 3px solid transparent;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-align: left;
+    transition: all 0.2s;
+}
+
+.nav-btn:hover {
+    background: var(--bg-alt);
+    border-left-color: var(--primary);
+}
+
+.nav-btn.active {
+    background: var(--bg-alt);
+    color: var(--primary);
+    border-left-color: var(--primary);
+    font-weight: 600;
+}
+
+/* ===========================
+   MOBILE RESPONSIVE (≤768px)
+   =========================== */
+@media (max-width: 768px) {
+    /* Mobile: Full-screen overlay menu */
+    .nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100vh;
+        background: var(--bg);
+        border-right: none;
+        z-index: 999;
+        transform: translateX(100%);
+        padding-top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Show menu when open */
+    body.mobile-menu-open .nav {
+        transform: translateX(0);
+    }
+
+    /* Dark overlay */
+    .nav-overlay {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 998;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+    }
+
+    body.mobile-menu-open .nav-overlay {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .nav-content {
+        padding: 0;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .nav-header {
+        padding: 2rem 2rem 1.5rem;
+        border-bottom: 2px solid var(--border);
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .nav-header h3 {
+        font-size: 1.5rem;
+    }
+
+    /* Show close button on mobile */
+    .menu-close-btn {
+        display: flex;
+    }
+
+    .nav-links {
+        padding: 0 1.5rem;
+    }
+
+    .nav-btn {
+        padding: 1.25rem 2rem;
+        font-size: 1.05rem;
+        border-left: none;
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+        text-align: center;
+        width: 100%;
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+        background: var(--primary);
+        color: white;
+        border-left: none;
+    }
+
+    /* Mobile: content takes full width and has proper padding */
+    .container {
+        margin-left: auto !important;
+        padding-top: 70px; /* Account for fixed header */
+    }
+}

@@ -1,0 +1,149 @@
+/* ===========================
+   HEADER STYLES
+   =========================== */
+
+.header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 0.6rem 0;
+    box-shadow: 0 4px 6px var(--shadow);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 100;
+
+    /* GPU acceleration - force hardware layer */
+    transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000px;
+    perspective: 1000px;
+
+    /* Smooth transitions optimized for 60fps - NO padding animation */
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Browser optimization hints */
+    will-change: transform;
+    contain: layout style paint;
+}
+
+/* Remove compact class - header stays same size always */
+.header.compact {
+    /* No changes - prevents shrinking/expanding */
+}
+
+/* Hidden header when scrolling down - GPU accelerated */
+.header.hidden {
+    transform: translate3d(0, -100%, 0);
+}
+
+.header .header-content h1 {
+    font-size: 1.2rem;
+    margin-bottom: 0;
+}
+
+.header.compact .header-content p {
+    display: none;
+}
+
+.header-content {
+    max-width: none;
+    margin: 0;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 {
+    font-size: 1.2rem;
+    margin-bottom: 0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* No transition on font-size - prevents size changes */
+}
+
+/* Database SVG icon */
+.db-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+
+/* Hamburger menu button (mobile only) */
+.hamburger-menu {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 101;
+}
+
+.hamburger-menu span {
+    width: 25px;
+    height: 2px;
+    background: white;
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hamburger-menu:hover span {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+/* Hamburger animation when menu is open */
+body.mobile-menu-open .hamburger-menu span:nth-child(1) {
+    transform: rotate(45deg) translate(7px, 7px);
+}
+
+body.mobile-menu-open .hamburger-menu span:nth-child(2) {
+    opacity: 0;
+}
+
+body.mobile-menu-open .hamburger-menu span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+.header p {
+    display: none;
+    margin-top: 0.25rem;
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .header {
+        padding: 0.75rem 0;
+    }
+
+    .header-content {
+        padding: 0 1rem;
+    }
+
+    .header h1 {
+        font-size: 1rem;
+    }
+
+    /* Show hamburger menu on mobile */
+    .hamburger-menu {
+        display: flex;
+    }
+
+    /* No compact changes on mobile either */
+    .header.compact {
+        padding: 0.75rem 0;
+    }
+
+    .header.compact h1 {
+        font-size: 1rem;
+    }
+}
